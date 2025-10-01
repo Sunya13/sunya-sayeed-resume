@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Resume | Sunya Sayeed</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3J7JS2MXK"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Q3J7JS2MXK');
+    </script>
+    <title>Sunya Sayeed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f9fafb; /* Off-White */
+            background-color: #f3f4f6;
         }
         .chart-container {
             position: relative;
@@ -29,7 +39,7 @@
             }
         }
         .highlight {
-            background-color: #bfdbfe; /* NEW: Blue-200 for a soft, pastel highlight */
+            background-color: #fcd34d;
             border-radius: 4px;
             padding: 2px 4px;
             transition: background-color 0.3s ease;
@@ -38,39 +48,101 @@
             transition: color 0.3s ease, border-bottom-color 0.3s ease;
         }
         .nav-link:hover, .nav-link.active {
-            color: #60a5fa; /* NEW: Blue-500 for active link */
-            border-bottom-color: #60a5fa;
+            color: #10b981;
+            border-bottom-color: #10b981;
         }
         .tab-button {
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .tab-button:hover {
+             background-color: #d1fae5;
         }
         .tab-button.active {
-            color: #4f46e5; /* Primary Indigo */
-            border-color: #60a5fa; /* NEW: Blue border for active tab */
-            background-color: #eff6ff; /* NEW: Blue-50 background for active tab */
+            color: #10b981;
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .company-logo {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            margin-right: 8px;
+        }
+        .company-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .left-timeline {
+            justify-content: flex-end;
+        }
+        .right-timeline {
+            justify-content: flex-start;
+        }
+        .left-timeline .order-1 {
+            order: 1;
+        }
+        .right-timeline .order-1 {
+            order: 3;
+        }
+        .left-timeline .order-1:nth-child(2) {
+            order: 2;
+        }
+        .right-timeline .order-1:nth-child(2) {
+            order: 2;
+        }
+        .timeline-dot {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .timeline-dot:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Card Flip Effect for Projects */
+        .project-card {
+            perspective: 1000px;
+        }
+        .project-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        .project-card:hover .project-inner {
+            transform: rotateY(10deg) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Mastery Bar Transition */
+        .mastery-bar-fill {
+            transition: width 1.5s ease-in-out;
         }
     </style>
 </head>
 <body class="text-slate-700">
 
 <!-- Header & Navigation -->
-<header class="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200">
+<header class="bg-white/95 backdrop-blur-sm sticky top-0 z-50 border-b border-green-200 shadow-md">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <div class="flex items-center">
-                <a href="#" class="text-xl font-extrabold text-indigo-700">Sunya Sayeed</a>
+                <a href="#" class="text-2xl font-black text-indigo-600 tracking-wider">SUNYA</a>
             </div>
             <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-4">
                     <a href="#overview" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Overview</a>
+                    <a href="#career-timeline" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Timeline</a>
+                    <a href="#projects" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Projects</a>
                     <a href="#experience" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Experience</a>
                     <a href="#skills" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Skills</a>
-                    <a href="#projects" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Projects</a>
                     <a href="#education" class="nav-link text-slate-500 border-b-2 border-transparent px-3 py-2 text-sm font-medium">Education</a>
                 </div>
             </div>
             <div class="md:hidden">
-                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span class="sr-only">Open main menu</span>
                     <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -79,148 +151,179 @@
             </div>
         </div>
     </nav>
-    <div id="mobile-menu" class="md:hidden hidden">
+    <div id="mobile-menu" class="md:hidden hidden bg-white shadow-xl">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="#overview" class="block nav-link text-slate-500 px-3 py-2 rounded-md text-base font-medium">Overview</a>
-            <a href="#experience" class="block nav-link text-slate-500 px-3 py-2 rounded-md text-base font-medium">Experience</a>
-            <a href="#skills" class="block nav-link text-slate-500 px-3 py-2 rounded-md text-base font-medium">Skills</a>
-            <a href="#projects" class="block nav-link text-slate-500 px-3 py-2 rounded-md text-base font-medium">Projects</a>
-            <a href="#education" class="block nav-link text-slate-500 px-3 py-2 rounded-md text-base font-medium">Education</a>
+            <a href="#overview" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Overview</a>
+            <a href="#career-timeline" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Timeline</a>
+            <a href="#projects" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Projects</a>
+            <a href="#experience" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Experience</a>
+            <a href="#skills" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Skills</a>
+            <a href="#education" class="block nav-link text-slate-500 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium">Education</a>
         </div>
     </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
     <!-- Overview Section -->
-    <section id="overview" class="mb-16 scroll-mt-16">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Senior Tech Lead & Subject Matter Expert</h1>
-            <p class="mt-6 text-lg leading-8 text-slate-600 max-w-3xl mx-auto" id="summary-content"></p>
+    <section id="overview" class="mb-20 scroll-mt-16">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 via-purple-600 to-teal-500 sm:text-6xl">Visionary Cloud Tech Lead & Senior Manager</h1>
+            <p class="mt-4 text-2xl font-bold text-slate-700">Architecting Secure, High-Performance Cloud & Data Solutions</p>
+            <p class="mt-8 text-xl leading-8 text-slate-600 max-w-4xl mx-auto">
+                A results-driven technical leader with extensive experience mentoring large, high-performing teams to architect and implement secure, scalable, full-stack applications and cloud-native solutions. My expertise lies in translating complex business requirements into high-performance systems, with a deep focus on <strong>Java microservices</strong>, enterprise <strong>data architecture</strong>, robust <strong>cloud strategy</strong>, and stringent <strong>regulatory governance</strong>. I specialize in modernizing legacy processes to deliver innovative, cost-saving solutions while enforcing the highest standards of data security.
+            </p>
         </div>
-        <div id="timeline-container" class="w-full overflow-x-auto pb-4">
-            <!-- Timeline will be generated here by JS -->
+    </section>
+
+    <!-- Career Timeline Section -->
+    <section id="career-timeline" class="mb-20 scroll-mt-16">
+        <h2 class="text-3xl font-bold text-center text-indigo-700 mb-8">Career Timeline</h2>
+        <div id="timeline-container" class="w-full relative overflow-x-auto pb-6">
+            <div id="scroll-indicator" class="absolute bottom-0 left-1/2 -translate-x-1/2 text-sm text-slate-400 animate-pulse">
+                &lt; Scroll to explore &gt;
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="mb-20 scroll-mt-16">
+        <h2 class="text-3xl font-extrabold text-indigo-700 mb-10">Technical Projects & Architecture Demos</h2>
+        <div id="projects-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         </div>
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="mb-16 scroll-mt-16">
-        <h2 class="text-3xl font-bold text-indigo-700 mb-8">Work Experience</h2>
+    <section id="experience" class="mb-20 scroll-mt-16">
+        <h2 class="text-3xl font-extrabold text-indigo-700 mb-10">Work Experience</h2>
         <div class="mb-8">
-            <div id="experience-tabs" class="flex flex-wrap gap-2 border-b border-indigo-200 pb-2">
-                <!-- Tab buttons will be generated by JS -->
+            <div id="experience-tabs" class="flex flex-wrap gap-3 border-b-2 border-green-200 pb-3">
             </div>
         </div>
-        <div id="experience-content" class="bg-white p-6 rounded-xl shadow-lg border border-slate-100">
-            <!-- Content panels will be generated by JS -->
+        <div id="experience-content" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 min-h-[400px]">
         </div>
-        <div class="mt-12">
+        <div class="mt-16">
             <h3 class="text-2xl font-bold text-indigo-700 mb-4 text-center">Technology Distribution</h3>
-            <p class="text-center text-slate-500 mb-6">This chart shows the technologies mentioned in each role. Click on a job tab above to filter the view.</p>
-            <div class="chart-container bg-white p-4 rounded-xl shadow-lg border border-slate-100">
+            <p class="text-center text-slate-500 mb-6">Visualizing the technology weight based on the selected role.</p>
+            <div class="chart-container bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
                 <canvas id="techChart"></canvas>
             </div>
         </div>
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="mb-16 scroll-mt-16">
-        <h2 class="text-3xl font-bold text-indigo-700 mb-8">Core Competencies</h2>
-        <p class="text-center text-slate-500 mb-6">Click on a skill to highlight where it was applied in my work experience.</p>
-        <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Skills will be generated here -->
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="mb-16 scroll-mt-16">
-        <h2 class="text-3xl font-bold text-indigo-700 mb-8">Personal Projects</h2>
-        <div id="projects-container">
-            <!-- Project will be generated here -->
+    <section id="skills" class="mb-20 scroll-mt-16">
+        <h2 class="text-3xl font-extrabold text-indigo-700 mb-8">Core Competencies & Mastery</h2>
+        <p class="text-center text-slate-500 mb-10">Click a skill to highlight its application in my work. Hover over the card to see its *estimated* proficiency level!</p>
+        <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         </div>
     </section>
 
     <!-- Education Section -->
     <section id="education" class="scroll-mt-16">
-        <h2 class="text-3xl font-bold text-indigo-700 mb-8">Education</h2>
-        <div id="education-container" class="bg-white p-6 rounded-xl shadow-lg border border-slate-100">
-            <!-- Education will be generated here -->
+        <h2 class="text-3xl font-extrabold text-indigo-700 mb-8">Education</h2>
+        <div id="education-container" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
         </div>
     </section>
 
 </main>
 
-<footer class="bg-indigo-700 mt-16 border-t border-indigo-600">
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-white text-center">
-        &copy; 2025 Sunya Sayeed | Interactive Resume
+<footer class="bg-indigo-700 mt-20 border-t border-indigo-600">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-white text-center">
+        <div class="mb-4 pt-2 border-t border-indigo-500">
+            <p class="text-lg italic font-light leading-relaxed">
+                "Never tell me the odds, for I know my capability is defined only by my will to achieve it."
+            </p>
+            <p class="text-sm font-medium mt-1 text-indigo-300">
+                — Han Solo
+            </p>
+        </div>
+        &copy; 2025 Sunya Sayeed
     </div>
 </footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Helper function to repeat an array n times
+        // --- Core Data Structures ---
         const repeat = (arr, n) => arr.flatMap(i => Array(n).fill(i));
 
+        const companyLogos = {
+            "Charles Schwab": "https://logos-world.net/wp-content/uploads/2021/03/Charles-Schwab-Logo.png",
+            "JPMorgan Chase & Co.": "https://placehold.co/40x40/0073B4/ffffff?text=JPMC",
+            "RBS/Natwest Group": "https://placehold.co/40x40/654890/ffffff?text=NWG",
+        };
+
+        // Gamified Skill Proficiency Scores (0-100)
+        const skillProficiency = {
+            "Java": 95, "Spring Boot": 90, "Python": 85, "Terraform": 80, "GCP": 85,
+            "Dataflow": 75, "Big Query": 70, "Apache Airflow": 75, "C": 50, "C++": 55, "C#": 70,
+            "Apache Kafka": 80, "SQL": 85, "Team Leadership": 92, "Microservices": 90,
+            "Kubernetes": 60, "Cloud-Native Solutions": 85, "ETL Pipelines": 90,
+            "BDD": 78, "DR Set Up": 70, "Cloud PubSub": 75, "MongoDB": 60,
+            "Perl CGI": 30, "Bash": 65, "Unix Servers": 70, "Service Registry": 75,
+            "Cloud Run": 70, "GCP IAM": 80, "Apache Cassandra": 60, "Oracle DB": 70,
+            "SQL Server": 70, "ZooKeeper": 65, "AWS WAF": 65, "AWS CloudFront": 65
+        };
+
         const resumeData = {
-            summary: "Experienced Senior Tech Lead and Subject Matter Expert with almost a decade of experience in software architecture, cloud-native data solutions, and backend development within the financial sector. Proven leader in building and mentoring high-performing teams to deliver innovative, high-performance solutions on both GCP and AWS. My expertise lies in translating complex business requirements into strategic technical designs, optimizing mission-critical systems, and ensuring robust data governance and security.",
             experience: [
                 {
                     company: "Charles Schwab",
-                    role: "Tech Lead/Sr. Manager",
+                    logoUrl: companyLogos["Charles Schwab"],
+                    role: "Cloud Team Lead/Cloud Tech Lead",
                     period: "Jan 2023 – Present",
                     location: "Remote/Houston, TX",
                     points: [
-                        "**Architected and led the implementation of a secure, event-driven data ingestion and monitoring framework on GCP, including configuring IAM for Cloud SQL and other services to ensure robust data access and governance.**",
-                        "**Developed a dynamic graph-traversal tracer for Apache Airflow DAGs and a generic aggregation framework for product lifecycle tracing, significantly improving data pipeline monitoring and business event processing.**",
-                        "**Designed and optimized high-performance ETL pipelines on GCP (Dataflow with Apache Beam, Cloud SQL, Big Query), focusing on partitioning, indexing, and archival strategies, and implemented a Dataflow-based correlation layer for resource optimization.**",
-                        "**Resolved complex networking challenges by enabling Composer support for triggered jobs across isolated and shared VPC networks, ensuring seamless integration with on-premise systems.**",
-                        "**Implemented secure cloud infrastructure using Terraform, enhanced management of technology states, scalability, and compliance, and established robust Disaster Recovery plans for critical GCP components.**",
-                        "**Served as technical lead for strategic data integration initiatives, partnering with stakeholders to translate complex requirements into scalable architectural designs and drive data-driven decision-making.**",
-                        "**Cultivated a high-performing team by mentoring engineers and empowering them to take ownership of critical framework code changes, while also minimizing client downtime by rapidly resolving pipeline issues through real-time override of failure thresholds.**"
+                        "Architected and led the implementation of a secure, event-driven data ingestion and monitoring framework on GCP, configuring IAM for Cloud SQL and other services to ensure robust data access and governance.",
+                        "Engineered a dynamic graph-traversal tracer for Apache Airflow DAGs, shifting pipeline monitoring and correlation for complex, multi-stage workflows from hours of manual investigation to minutes of client-facing, real-time visibility.",
+                        "Deployed resilient cloud infrastructure via Terraform and established robust Disaster Recovery (DR Set Up) plans, guaranteeing business continuity and minimal client impact by ensuring critical services remain available during a major GCP regional outage.",
+                        "Engineered a strategic networking solution to overcome a fundamental Dataflow constraint, enabling concurrent job execution across both isolated VPCs (for massive, IP-intensive workloads) and shared VPCs (for seamless on-premise system integration).",
+                        "Re-architected and optimized high-performance ETL pipelines (Dataflow/Apache Beam) to address unpredictable \"hot key\" loads that caused jobs to run for 2 hours, crash, restart, and result in critical production incidents. Implemented a 3-tiered Dataflow job distribution model (Small, Large, XL), which eliminated these failures and reduced overall processing time from 4+ hours to under 30 minutes.",
+                        "Cultivated a high-performing team by mentoring engineers and empowering them to take ownership of critical framework code changes, while also minimizing client downtime by rapidly resolving pipeline issues (Team Leadership)."
                     ],
-                    // Technologies array (3 years weighting)
                     technologies: repeat([
                         "Data Modelling", "Terraform", "Dataflow", "Cloud Run",
                         "Cloud Run Function", "Postgres Cloud SQL", "Big Query",
                         "Cloud Composer", "Cloud PubSub", "DR Set Up", "API Gateway",
-                        "Service Registry", "Load Balancer", "Apache Airflow", "GCP IAM"
+                        "Service Registry", "Load Balancer", "Apache Airflow", "GCP IAM", "Apache Beam", "ETL Pipelines"
                     ], 3)
                 },
                 {
                     company: "JPMorgan Chase & Co.",
-                    role: "Senior Software Engineer",
+                    logoUrl: companyLogos["JPMorgan Chase & Co."],
+                    role: "Senior Software Engineer/Tech Lead",
                     period: "Jan 2021 – Dec 2022",
                     location: "Plano/Houston, TX",
                     points: [
-                        "**Architected and modeled a foundational automation framework for Java microservices using the Karate BDD framework, solving a company-wide problem beyond contract testing and enabling seamless end-to-end integration testing for complex consumer banking scenarios like account opening and fraud checks. Mentored teams across the organization to facilitate the adoption of this framework and expand test coverage.**",
-                        "**Leveraged the Spring Boot Aggregator framework to refactor the applicant service flow, supporting multiple aggregators and designing a config-driven release strategy to dynamically handle various permutations of events.**",
-                        "**Developed a routing utility using Spring Boot Messaging Channels to replay messages from Apache Kafka, implementing an Event Driven Architecture to enable a targeted restart from the point of failure instead of rerunning the entire process, which resolved critical production issues and provided the business with a scalable solution for bulk replay and auditing. We utilized Oracle and SQL Server for persistence.**"
+                        "Led the critical modernization of the application's persistent layer, migrating from Apache Cassandra to Oracle/SQL Server to enforce ACID (Atomicity, Consistency, Isolation, Durability) compliance, a non-negotiable requirement for banking transactions, and enabling seamless integration with multiple aggregators.",
+                        "Architected a foundational automation framework (Karate Scripts/Java Microservices) that empowered product owners and testing teams to execute scenarios with user-defined datasets, accelerating release cycles and enhancing quality across consumer banking services (BDD).",
+                        "Led the architectural refactoring of the core applicant service flow (Spring Boot Aggregator), designing a config-driven release strategy that dynamically supports all event permutations, massively cutting down development time and ensuring high service flexibility.",
+                        "Developed a sophisticated Spring Boot Messaging utility for bulk Apache Kafka replay that solved complex serialization and mid-processing failures. This utility ensured robust, non-duplicative client account recovery by intelligently reconsuming messages starting from the exact point of failure across topics and partitions, critically stabilizing the application flow."
                     ],
-                    // 2 years weighting
                     technologies: repeat([
                         "Java", "Spring Boot", "Apache Cassandra", "Python", "BDD",
                         "Bash", "Karate", "Oracle DB", "SQL Server", "Apache Kafka",
-                        "Event Driven Architecture"
+                        "Event Driven Architecture", "SQL", "Microservices"
                     ], 2)
                 },
                 {
                     company: "RBS/Natwest Group",
+                    logoUrl: companyLogos["RBS/Natwest Group"],
                     role: "Global Derivatives Trading Developer / Rates Full Stack Developer",
                     period: "Feb 2017 – Jan 2021",
                     location: "London, UK",
                     points: [
-                        "**Owned and served as the Subject Matter Expert (SME) for the complex end-to-end technology stack within the Fixed Income trade processing space. This included designing and deploying REST/SOAP microservices (Java), implementing high-volume automation processes (Python), and developing critical UI applications (C/C++).**",
-                        "**Slashed end-to-end processing latency for complex FPML derivative deals from over 40 minutes to 2 minutes (a 95% reduction) by architecting a highly concurrent trade processing engine. This was achieved using a Spring Boot messaging container (managing 25+ threads) and a ZooKeeper-based assembly workflow to eliminate system choking and massively increase throughput.**",
-                        "**Significantly improved service performance and stability for a high-traffic RESTful web service by implementing advanced caching strategies and using profiling tools like JProfiler and VisualVM to analyze bottlenecks and optimize memory utilization.**",
-                        "**Led the design, development, and delivery of strategic platform changes to meet external regulatory requirements (MIFID II, Dodd-Frank, and MAS). Key achievements included engineering a robust algorithm and leading the global platform implementation of Dodd Frank's execution timestamp.**",
-                        "**Reengineered and stabilized legacy processes by fixing complex race conditions in existing C/C++ codebases and strategically migrating core functionality to modern C# and Java services to enhance reliability and maintainability.**",
-                        "**Quickly debugged and resolved critical production incidents by analyzing the full intercommunication chain—from the C++ Front-Office UI through the C# Trade Server to the Java Spring Boot Microservices—to diagnose the root cause and minimize business disruption.**"
+                        "Owned and served as the Subject Matter Expert (SME) for the complex end-to-end technology stack in the Fixed Income trade processing space (Java, Python, C/C++, Sybase SQL).",
+                        "Slashed end-to-end processing latency for complex FPML derivative deals from over 40 minutes to 2 minutes (a 95% reduction) by architecting a highly concurrent trade processing engine using Spring Boot messaging and ZooKeeper.",
+                        "Significantly improved service performance and stability for a high-traffic RESTful web service by implementing advanced caching strategies and using profiling tools (JProfiler, VisualVM).",
+                        "Led the design, development, and delivery of strategic platform changes to meet external regulatory requirements (MIFID II, Dodd-Frank, and MAS).",
+                        "Reengineered and stabilized legacy processes by fixing complex race conditions in existing C/C++ codebases and strategically migrating core functionality to modern C# and Java services.",
+                        "Quickly debugged and resolved critical production incidents by analyzing the full intercommunication chain—from C++ Front-Office UI through the C# Trade Server to the Java Spring Boot Microservices."
                     ],
-                    // 4 years weighting
                     technologies: repeat([
-                        "Java", "C", "C++", "Python", "Sybase SQL", "MongoDB",
-                        "Spring Boot", "Spring", "Bash", "Perl CGI", "Data Modeling",
-                        "Unix Servers", "EMS Queue", "Rabbit MQ", "ZooKeeper"
+                        "Java", "C", "C++", "C#", "Python", "Sybase SQL", "MongoDB",
+                        "Spring Boot", "Spring", "Bash", "Perl CGI", "Data Modelling",
+                        "Unix Servers", "EMS Queue", "Rabbit MQ", "ZooKeeper", "SQL", "Microservices"
                     ], 4)
                 }
             ],
@@ -230,7 +333,7 @@
                     "GCP", "AWS", "Cloud-Native Solutions", "Microservices", "Event Driven Architecture",
                     "Secure Infrastructure", "API Gateway", "Load Balancer", "DR Set Up", "Service Registry",
                     "Cloud Run", "Cloud Run Function", "Cloud Composer", "GCP IAM", "Apache Airflow",
-                    "AWS CloudFront", "AWS WAF"
+                    "AWS CloudFront", "AWS WAF", "Terraform"
                 ],
                 "Backend & Data": [
                     "Java", "Spring Boot", "Spring", "Python", "C", "C++", "C#",
@@ -243,180 +346,232 @@
             },
             projects: [
                 {
-                    name: "Various Scalable Projects (Personal)",
-                    // UPDATED DESCRIPTION to showcase initiative
-                    description: "Built various scalable projects to showcase my passion for learning and building in my personal time. One key project involved a highly secure serverless architecture on AWS: **AWS CloudFront** was implemented as the Content Delivery Network (CDN) while **AWS WAF (Web Application Firewall)** secured the layer before the API Gateway and Load Balancer. The backend uses Lambda functions for APIs, DynamoDB for data storage, and S3 for static asset hosting. Implemented a DR setup to ensure business continuity."
+                    name: "Resilient Event Ingestion Pipeline",
+                    description: "Designed a clean, extensible, and resilient event ingestion pipeline that enforces schema quality, isolates failures, and applies **SOLID principles**. Features a fully interactive simulation of the ingestion flow, highlighting observability and fault tolerance.",
+                    linkFile: "pipeline_showcase.html",
+                    buttonText: "View Pipeline Simulation",
+                    buttonColor: "bg-cyan-600 hover:bg-cyan-700"
+                },
+                {
+                    name: "Generic Flask IAM Architecture",
+                    description: "Architected a layered authorization solution for a **Flask-based Data Application** using **OIDC**. The design leverages Identity Federation for authentication and dynamically maps external groups to granular **RBAC** policies, demonstrating enterprise-grade security integration.",
+                    linkFile: "flaskapp_iam_diagram.html",
+                    buttonText: "View IAM Architecture",
+                    buttonColor: "bg-pink-600 hover:bg-pink-700"
+                },
+                {
+                    name: "GCP IAM Segmentation Strategy",
+                    description: "Created a comprehensive **Identity and Access Management (IAM)** model for **Cloud SQL**, implementing **Least Privilege** and **Separation of Duties**. Visualizes the strict security boundary between Non-Prod and Production environments to prevent unauthorized data access.",
+                    linkFile: "iam_gcp_diagram.html",
+                    buttonText: "View GCP Diagram",
+                    buttonColor: "bg-indigo-600 hover:bg-indigo-700"
+                },
+                {
+                    name: "Secure Serverless Architecture (AWS)",
+                    description: "Built a scalable and highly secure serverless architecture on AWS. **AWS CloudFront** acts as the CDN, while **AWS WAF (Web Application Firewall)** secures the layer before the API Gateway and Load Balancer. The backend uses Lambda functions for APIs, DynamoDB for data storage, and S3 for static asset hosting.",
+                    diagram: `
+                        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center text-xs font-mono">
+                            <div class="p-3 border border-indigo-300 rounded-lg bg-white shadow-sm font-bold">Client</div>
+                            <div class="font-bold text-green-500 text-lg">&rarr;</div>
+                            <div class="p-3 border border-indigo-300 rounded-lg bg-green-50 shadow-sm">CloudFront (CDN)</div>
+                            <div class="font-bold text-green-500 text-lg">&rarr;</div>
+                            <div class="p-3 border border-indigo-300 rounded-lg bg-red-100 shadow-sm font-bold text-red-700">AWS WAF (Security)</div>
+                            <div class="font-bold text-green-500 text-lg">&rarr;</div>
+                            <div class="p-3 border border-indigo-300 rounded-lg bg-blue-100 shadow-sm">API Gateway / LB</div>
+                            <div class="font-bold text-green-500 text-lg">&harr;</div>
+                            <div class="flex flex-col space-y-2">
+                                 <div class="p-3 border border-indigo-300 rounded-lg bg-white shadow-sm">AWS Lambda (APIs)</div>
+                                 <div class="p-3 border border-indigo-300 rounded-lg bg-white shadow-sm">DynamoDB (Data)</div>
+                                 <div class="p-3 border border-indigo-300 rounded-lg bg-white shadow-sm">S3 Storage (Assets)</div>
+                            </div>
+                        </div>
+                    `,
+                    buttonColor: "bg-green-600 hover:bg-green-700" // Default for diagram cards
+                },
+                {
+                    name: "PingID FIDO2 Desktop Passwordless Demo",
+                    description: "Functional HTML simulation demonstrating the secure, phishing-resistant Passkey login workflow brokered by Ping Identity. Essential for mixed Windows/macOS desktop fleets. Showcases **Origin Binding**, hardware reliance (TPM/Secure Enclave), and seamless transition to SSO.",
+                    linkFile: "fun_passwordless_breakdown.html",
+                    buttonText: "Run Passwordless Desktop Demo",
+                    buttonColor: "bg-orange-500 hover:bg-orange-600"
+                },
+                {
+                    name: "CI/CD Pipeline Adventure",
+                    description: "An interactive, deep-dive simulation of a secure, keyless Terraform deployment pipeline on AWS using <strong>GitHub Actions</strong> and <strong>OIDC</strong>, including detailed IAM policy examples.",
+                    linkFile: "github_actions_ci_cd.html",
+                    buttonText: "Explore the CI/CD Adventure",
+                    buttonColor: "bg-purple-600 hover:bg-purple-700"
                 }
             ],
             education: {
                 degree: "BEng Computer Systems Engineering (First Class Honours)",
-                university: "City University of London",
-                period: "Aug 2013 – Aug 2016"
+                university: "City St George’s, University of London",
+                period: "Sept 2013 – Aug 2016"
             }
         };
 
-        // Populate static content
-        document.getElementById('summary-content').innerHTML = resumeData.summary;
-
-        // --- Timeline Generation ---
+        // --- DOM Elements ---
         const timelineContainer = document.getElementById('timeline-container');
-        const timelineHTML = `
-            <div class="relative wrap overflow-hidden p-10 h-full">
-                <div class="border-2-2 absolute border-opacity-20 border-slate-300 h-full border" style="left: 50%"></div>
-                ${resumeData.experience.map((job, index) => `
-                    <div class="mb-8 flex justify-between items-center w-full ${index % 2 === 0 ? 'flex-row-reverse left-timeline' : 'right-timeline'}">
-                        <div class="order-1 w-5/12"></div>
-                        <div class="z-20 flex items-center order-1 bg-blue-500 shadow-xl w-8 h-8 rounded-full"> <!-- Blue circle -->
-                            <h1 class="mx-auto font-semibold text-lg text-white">${resumeData.experience.length - index}</h1>
-                        </div>
-                        <div class="order-1 bg-white rounded-xl shadow-md w-5/12 px-6 py-4 border border-slate-100">
-                            <h3 class="font-bold text-indigo-700 text-lg">${job.company}</h3>
-                            <p class="text-sm leading-snug tracking-wide text-slate-500">${job.role}</p>
-                            <p class="text-xs text-slate-400">${job.period}</p>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>`;
-        timelineContainer.innerHTML = timelineHTML;
-
-        // --- Experience Tabs and Content ---
         const tabsContainer = document.getElementById('experience-tabs');
         const contentContainer = document.getElementById('experience-content');
-
-        resumeData.experience.forEach((job, index) => {
-            const tabButton = document.createElement('button');
-            tabButton.className = `tab-button px-4 py-2 text-sm font-medium rounded-t-md border-b-2 border-transparent ${index === 2 ? 'active' : ''}`;
-            tabButton.textContent = job.company;
-            tabButton.dataset.target = `panel-${index}`;
-            tabsContainer.appendChild(tabButton);
-
-            const contentPanel = document.createElement('div');
-            contentPanel.id = `panel-${index}`;
-            contentPanel.className = `experience-panel ${index !== 2 ? 'hidden' : ''}`;
-
-            let pointsHTML = job.points.map(point => {
-                let cleanPoint = point.replace(/\*\*/g, '');
-                return `<li class="mb-2 pl-6 relative"><span class="absolute left-0 top-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>${cleanPoint}</li>`; // Blue bullet
-            }).join('');
-
-            contentPanel.innerHTML = `
-                <h3 class="text-2xl font-bold text-indigo-800">${job.role}</h3>
-                <p class="text-md text-slate-500 mb-1">${job.company} | ${job.location}</p>
-                <p class="text-sm text-slate-400 mb-6">${job.period}</p>
-                <ul class="text-slate-600">${pointsHTML}</ul>
-            `;
-            contentContainer.appendChild(contentPanel);
-        });
-
-        tabsContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tab-button')) {
-                tabsContainer.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-
-                contentContainer.querySelectorAll('.experience-panel').forEach(panel => panel.classList.add('hidden'));
-                document.getElementById(e.target.dataset.target).classList.remove('hidden');
-
-                const companyFilter = e.target.textContent;
-                updateChart(companyFilter);
-            }
-        });
-
-        // --- Skills Generation ---
         const skillsContainer = document.getElementById('skills-container');
-        Object.entries(resumeData.skills).forEach(([category, skillsList]) => {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'bg-white p-6 rounded-xl shadow-md border border-slate-100';
-            let skillsHTML = skillsList.map(skill => `<li class="skill-item cursor-pointer hover:text-blue-600 transition-colors duration-200" data-skill="${skill.toLowerCase()}">${skill}</li>`).join(''); // Blue hover
-            categoryDiv.innerHTML = `
-                <h3 class="text-xl font-bold text-indigo-700 mb-4">${category}</h3>
-                <ul class="space-y-2 text-slate-600">${skillsHTML}</ul>
-            `;
-            skillsContainer.appendChild(categoryDiv);
-        });
-
-        let activeSkill = null;
-        skillsContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('skill-item')) {
-                const skill = e.target.dataset.skill;
-
-                document.querySelectorAll('.highlight').forEach(el => {
-                    el.outerHTML = el.innerHTML;
-                });
-                skillsContainer.querySelectorAll('.skill-item').forEach(item => item.classList.remove('text-blue-600', 'font-bold')); // Blue active
-
-                if (activeSkill !== skill) {
-                    const originalSkills = Object.values(resumeData.skills).flat();
-                    const originalSkillName = originalSkills.find(s => s.toLowerCase() === skill);
-
-                    if (originalSkillName) {
-                        const regex = new RegExp(`\\b(${originalSkillName.replace(/\./g, '\\.')})\\b`, 'gi');
-
-                        contentContainer.querySelectorAll('.experience-panel ul li').forEach(li => {
-                            li.innerHTML = li.innerHTML.replace(regex, `<span class="highlight">$1</span>`);
-                        });
-                    }
-
-                    e.target.classList.add('text-blue-600', 'font-bold'); // Blue active
-                    activeSkill = skill;
-                } else {
-                    activeSkill = null;
-                }
-            }
-        });
-
-
-        // --- Projects / Education Generation ---
         const projectsContainer = document.getElementById('projects-container');
-        resumeData.projects.forEach(project => {
-            projectsContainer.innerHTML += `
-                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <p class="text-slate-600">${project.description.replace(/\*\*(.*?)\*\*/g, '$1')}</p>
-                    <div class="mt-6 p-4 border border-blue-200 rounded-lg bg-blue-50"> <!-- Blue accents -->
-                        <h4 class="font-bold text-indigo-700 mb-4">Architecture Diagram</h4>
-                        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center text-xs font-mono">
-                            <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">Client</div>
+        const educationContainer = document.getElementById('education-container');
 
-                            <!-- UPDATED ARCHITECTURE FLOW -->
-                            <div class="font-bold text-blue-500">&rarr;</div>
-                            <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">CloudFront (CDN)</div>
-                            <div class="font-bold text-blue-500">&rarr;</div>
-                            <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">AWS WAF</div>
-                            <div class="font-bold text-blue-500">&rarr;</div>
+        // --- Initialization Functions ---
 
-                            <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">API Gateway / LB</div>
-                            <div class="font-bold text-blue-500">&harr;</div>
-                            <div class="flex flex-col space-y-2">
-                                 <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">AWS Lambda</div>
-                                 <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">DynamoDB</div>
-                                 <div class="p-3 border border-blue-300 rounded-md bg-white shadow-sm">S3 Storage</div>
+        function generateTimeline() {
+            const timelineItemsHTML = resumeData.experience.map((job, index) => {
+                const isLeft = index % 2 === 0;
+                return `
+                    <div class="mb-8 flex justify-between items-center w-full ${isLeft ? 'flex-row-reverse left-timeline' : 'right-timeline'}">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-indigo-500 shadow-xl w-10 h-10 rounded-full timeline-dot">
+                            <h1 class="mx-auto font-black text-xl text-white">${resumeData.experience.length - index}</h1>
+                        </div>
+                        <div class="order-1 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-5/12 px-6 py-4 border border-slate-100">
+                            <div class="flex items-center mb-1">
+                                <img src="${job.logoUrl}" alt="${job.company} logo" class="company-logo w-6 h-6">
+                                <h3 class="font-bold text-indigo-700 text-lg">${job.company}</h3>
                             </div>
+                            <p class="text-sm tracking-wide text-slate-500">${job.role}</p>
+                            <p class="text-xs text-slate-400 mt-1">${job.period}</p>
                         </div>
                     </div>
+                `;
+            }).join('');
+
+            timelineContainer.innerHTML = `
+                <div class="relative wrap overflow-hidden p-10 h-full w-[150%] md:w-full">
+                    <div class="border-2-2 absolute border-opacity-30 border-green-400 h-full border-4 rounded-full" style="left: 50%"></div>
+                    ${timelineItemsHTML}
+                </div>`;
+        }
+
+        function generateExperience() {
+
+            resumeData.experience.forEach((job, index) => {
+                // 1.  Tab Button
+                const tabButton = document.createElement('button');
+                tabButton.className = `tab-button px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-transparent ${index === 0 ? 'active' : ''}`;
+                tabButton.dataset.target = `panel-${index}`;
+                tabButton.innerHTML = `<img src="${job.logoUrl}" onerror="this.onerror=null;this.src='${companyLogos[job.company]}';" alt="${job.company} logo" class="company-logo">${job.company}`;
+                tabsContainer.appendChild(tabButton);
+
+                // 2.  Content Panel
+                const contentPanel = document.createElement('div');
+                contentPanel.id = `panel-${index}`;
+                contentPanel.className = `experience-panel transition-opacity duration-500 ${index !== 0 ? 'hidden opacity-0' : 'opacity-100'}`;
+
+                let pointsHTML = job.points.map(point => {
+                    let cleanPoint = point.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // Keep bolding inside points
+                    return `<li class="mb-3 pl-8 relative"><span class="absolute left-0 top-1.5 w-3 h-3 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</span>${cleanPoint}</li>`;
+                }).join('');
+
+                contentPanel.innerHTML = `
+                    <div class="company-header mb-4">
+                        <img src="${job.logoUrl}" onerror="this.onerror=null;this.src='${companyLogos[job.company]}';" alt="${job.company} logo" class="w-10 h-10 object-contain p-1 rounded-lg border border-slate-200">
+                        <div>
+                            <h3 class="text-2xl font-bold text-indigo-800">${job.role}</h3>
+                            <p class="text-md text-slate-500">${job.company} | ${job.location}</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6 font-medium bg-indigo-50 inline-block px-3 py-1 rounded-full">${job.period}</p>
+                    <ul class="text-slate-700 leading-relaxed list-none">${pointsHTML}</ul>
+                `;
+                contentContainer.appendChild(contentPanel);
+            });
+        }
+
+        function generateSkills() {
+            Object.entries(resumeData.skills).forEach(([category, skillsList]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'skill-category bg-white p-6 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow duration-300';
+                let skillsHTML = skillsList.map(skill => {
+                    const mastery = skillProficiency[skill] || 50;
+                    return `
+                        <li class="skill-item cursor-pointer mb-3 p-2 rounded-lg transition-all duration-300 hover:bg-green-50" data-skill="${skill.toLowerCase()}" data-mastery="${mastery}">
+                            <span class="font-medium text-slate-800 hover:text-green-600 transition-colors duration-200">${skill}</span>
+                            <div class="mastery-bar mt-1 h-2 bg-slate-200 rounded-full overflow-hidden hidden" data-skill-bar="${skill.toLowerCase()}">
+                                <div class="mastery-bar-fill h-full rounded-full bg-green-500" style="width: 0%;" data-fill-level="${mastery}"></div>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+                categoryDiv.innerHTML = `
+                    <h3 class="text-xl font-bold text-indigo-700 mb-4 border-b pb-2">${category}</h3>
+                    <ul class="space-y-1 text-slate-600">${skillsHTML}</ul>
+                `;
+                skillsContainer.appendChild(categoryDiv);
+            });
+        }
+
+        function generateProjects() {
+            let projectsHTML = resumeData.projects.map(project => {
+                const buttonColor = project.buttonColor || 'bg-indigo-600 hover:bg-indigo-700';
+
+                // Handle Diagram/Embed style cards
+                if (project.diagram) {
+                    return `
+                        <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                            <div class="project-inner">
+                                <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">${project.name}</h3>
+                                <p class="text-slate-700 leading-relaxed">${project.description.replace(/\*\*(.*?)\*\*/g, '<b class="text-green-600 font-bold">$1</b>')}</p>
+                                <div class="mt-8 p-6 border-2 border-green-300 rounded-xl bg-green-50/50">
+                                    <h4 class="font-black text-indigo-700 mb-6 text-center text-xl">The Secure AWS Architecture Blueprint</h4>
+                                    ${project.diagram}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Handle Standard Link cards
+                return `
+                    <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col justify-between">
+                        <div class="project-inner">
+                            <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">${project.name}</h3>
+                            <p class="text-slate-700 leading-relaxed mb-8">${project.description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
+                        </div>
+                        <a href="${project.linkFile}" target="_blank" class="block w-full text-center mt-6">
+                            <button class="w-full ${buttonColor} text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-[1.01]">
+                                ${project.buttonText}
+                            </button>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            projectsContainer.innerHTML = projectsHTML;
+        }
+
+        function generateEducation() {
+            educationContainer.innerHTML = `
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-indigo-700">${resumeData.education.degree}</h3>
+                        <p class="text-md text-slate-600">${resumeData.education.university}</p>
+                    </div>
+                    <p class="text-sm text-slate-400 mt-2 md:mt-0 font-medium bg-slate-100 px-3 py-1 rounded-full">${resumeData.education.period}</p>
                 </div>
             `;
-        });
+        }
 
-        const educationContainer = document.getElementById('education-container');
-        educationContainer.innerHTML = `
-            <h3 class="text-xl font-bold text-indigo-700">${resumeData.education.degree}</h3>
-            <p class="text-md text-slate-600">${resumeData.education.university}</p>
-            <p class="text-sm text-slate-400">${resumeData.education.period}</p>
-        `;
+        // --- Chart Logic ---
 
-        // --- Chart.js Logic (Updated color accents) ---
         const ctx = document.getElementById('techChart').getContext('2d');
         let techChart;
 
-        function getTechCounts(filter = 'All') {
+        function getTechCounts(filter = 'Charles Schwab') {
             let techSource = [];
 
-            if (filter === 'All') {
-                techSource = resumeData.experience.flatMap(j => j.technologies || []);
+            // Find the job matching the filter (which is always a company name)
+            const job = resumeData.experience.find(j => j.company === filter);
+            if (job && job.technologies) {
+                techSource = job.technologies;
             } else {
-                const job = resumeData.experience.find(j => j.company === filter);
-                if (job && job.technologies) {
-                    techSource = job.technologies;
-                }
+                 // Default to the first job if filter doesn't match a company or is missing
+                techSource = resumeData.experience[0].technologies || [];
             }
 
             const counts = {};
@@ -426,9 +581,10 @@
                 counts[cleanTech] = (counts[cleanTech] || 0) + 1;
             });
 
+            // Filter for top 10 most mentioned techs
             const sortedTech = Object.entries(counts)
-                .sort(([, a], [, b]) => a - b)
-                .filter(([, count]) => count > 0);
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 10);
 
             return {
                 labels: sortedTech.map(item => item[0]),
@@ -447,9 +603,13 @@
                     datasets: [{
                         label: 'Technology Experience Weight',
                         data: chartData.data,
-                        backgroundColor: '#60a5fa', /* NEW: Blue-500 for chart bars */
-                        borderColor: '#3b82f6', /* NEW: Blue-600 */
-                        borderWidth: 1
+                        backgroundColor: [
+                            '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5',
+                            '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5'
+                        ],
+                        borderColor: '#059669',
+                        borderWidth: 1,
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -457,68 +617,168 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.x !== null) {
-                                        label += context.parsed.x + ' mentions';
-                                    }
-                                    return label;
-                                }
+                                label: (context) => `${context.label}: ${context.parsed.x} mentions`
                             }
                         }
                     },
                     scales: {
                         x: {
                             beginAtZero: true,
-                            ticks: {
-                               stepSize: 1
-                            }
+                            grid: { display: false },
+                            ticks: { stepSize: 1, color: '#4b5563' }
+                        },
+                        y: {
+                            grid: { color: '#e5e7eb' },
+                            ticks: { color: '#1f2937' }
                         }
                     }
                 }
             });
         }
 
-        function updateChart(companyFilter = 'All') {
+        function updateChart(companyFilter) {
             const chartData = getTechCounts(companyFilter);
             createChart(chartData);
         }
 
-        updateChart('RBS/Natwest Group');
+        // --- Event Listeners and Setup ---
 
-        // --- Mobile Menu / Nav Scrolling (No change to logic) ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        function setupListeners() {
+            // Tab Listener
+            tabsContainer.addEventListener('click', (e) => {
+                let targetButton = e.target.closest('.tab-button');
+                if (targetButton) {
+                    const targetId = targetButton.dataset.target;
+                    const companyFilter = targetButton.textContent.replace(/^(CS|JPMC|NWG)\s*/, '').trim();
 
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 100) {
-                    current = section.getAttribute('id');
+                    tabsContainer.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    targetButton.classList.add('active');
+
+                    contentContainer.querySelectorAll('.experience-panel').forEach(panel => {
+                        panel.classList.add('hidden', 'opacity-0');
+                    });
+
+                    const targetPanel = document.getElementById(targetId);
+                    if(targetPanel) {
+                        setTimeout(() => {
+                            targetPanel.classList.remove('hidden');
+                            setTimeout(() => targetPanel.classList.remove('opacity-0'), 10);
+                        }, 10);
+                    }
+
+                    updateChart(companyFilter);
                 }
             });
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
+
+            // Skill Highlight & Mastery Bar Listener
+            let activeSkill = null;
+            skillsContainer.addEventListener('click', (e) => {
+                const item = e.target.closest('.skill-item');
+                if (item) {
+                    const skill = item.dataset.skill;
+
+                    // 1. Clear previous state
+                    contentContainer.querySelectorAll('.highlight').forEach(el => {
+                        el.outerHTML = el.innerHTML;
+                    });
+                    skillsContainer.querySelectorAll('.skill-item').forEach(i => i.classList.remove('bg-green-200', 'font-bold'));
+                    skillsContainer.querySelectorAll('.mastery-bar').forEach(bar => {
+                         bar.classList.add('hidden');
+                         bar.querySelector('.mastery-bar-fill').style.width = '0%';
+                    });
+
+                    if (activeSkill !== skill) {
+                        // 2. Highlight new skill
+                        const originalSkills = Object.keys(skillProficiency);
+                        const originalSkillName = originalSkills.find(s => s.toLowerCase() === skill);
+
+                        if (originalSkillName) {
+                            const escapedSkill = originalSkillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                            const regex = new RegExp(`\\b(${escapedSkill})\\b`, 'gi');
+
+                            contentContainer.querySelectorAll('.experience-panel ul li').forEach(li => {
+                                let liText = li.innerHTML;
+                                // Protect HTML tags (like <b>) from being highlighted
+                                liText = liText.replace(/<\/?b>/g, (match) => (match === '<b>' ? '___B_START___' : '___B_END___'));
+                                li.innerHTML = liText.replace(regex, `<span class="highlight">$1</span>`).replace(/___B_START___/g, '<b>').replace(/___B_END___/g, '</b>');
+                            });
+                        }
+
+                        // 3. Display mastery bar and fill it
+                        item.classList.add('bg-green-200', 'font-bold');
+                        const bar = item.querySelector('.mastery-bar');
+                        const fill = item.querySelector('.mastery-bar-fill');
+                        if (bar && fill) {
+                            bar.classList.remove('hidden');
+                            const masteryLevel = fill.dataset.fillLevel;
+                            setTimeout(() => {
+                                fill.style.width = `${masteryLevel}%`;
+                            }, 50); // Small delay to trigger transition
+                        }
+                        activeSkill = skill;
+                    } else {
+                        // Deselect
+                        activeSkill = null;
+                    }
                 }
             });
-        });
 
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Active Navigation Highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.scrollY >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+
+                 // Hide scroll indicator on timeline if not needed
+                const timelineDiv = timelineContainer.querySelector('.wrap');
+                const indicator = document.getElementById('scroll-indicator');
+                if (timelineDiv && indicator) {
+                    if (timelineDiv.scrollWidth > timelineDiv.clientWidth) {
+                         // Only hide indicator if scrolling down past the timeline section
+                        const timelineBottom = timelineContainer.offsetTop + timelineContainer.offsetHeight;
+                        if (window.scrollY > timelineBottom - 200) {
+                            indicator.classList.add('opacity-0');
+                        } else {
+                            indicator.classList.remove('opacity-0');
+                        }
+                    } else {
+                        indicator.classList.add('hidden'); // Hide if no horizontal scroll is possible
+                    }
+                }
+            });
+        }
+
+        // --- Execution ---
+        generateTimeline();
+        generateExperience();
+        generateSkills();
+        generateProjects();
+        generateEducation();
+        setupListeners();
+
+        updateChart('Charles Schwab');
     });
 </script>
 </body>

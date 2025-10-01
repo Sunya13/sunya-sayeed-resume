@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Pipeline Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .step-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .step-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .step-active {
+            background-color: #4f46e5; /* indigo-600 */
+            color: white;
+            border-color: #6366f1; /* indigo-500 */
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4), 0 8px 10px -6px rgba(79, 70, 229, 0.4);
+        }
+        .step-completed {
+            background-color: #dcfce7; /* green-100 */
+            color: #166534; /* green-800 */
+            border-color: #4ade80; /* green-400 */
+        }
+        .step-pending {
+            background-color: #f1f5f9; /* slate-100 */
+            color: #475569; /* slate-600 */
+            border-color: #e2e8f0; /* slate-200 */
+        }
+        .diagram {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
+            border: 1px solid #334155; /* slate-700 */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            line-height: 1.7;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .strength-item {
+            background-color: #f7f7ff;
+            border-left: 4px solid #a78bfa; /* violet-400 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .code-snippet {
+            background-color: #1f2937;
+            color: #d1fae5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-slate-200 p-4 md:p-12">
+
+<div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <header class="p-6 md:p-8 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white">
+        <h1 class="text-3xl lg:text-4xl font-extrabold">My CI/CD Pipeline Adventure 🚀</h1>
+        <p class="mt-2 text-lg text-indigo-200">A colorful, interactive simulation of my secure, keyless Terraform deployment on AWS.</p>
+    </header>
+
+    <main class="p-6 md:p-8">
+        <!-- Stepper Navigation -->
+        <nav class="mb-8">
+            <ol class="flex flex-col md:flex-row md:flex-wrap items-center justify-center gap-4">
+                <li class="w-full md:w-auto"><div id="step-nav-1" class="step step-active flex flex-row items-center justify-center p-4 border-2 rounded-lg cursor-pointer"><span class="text-lg font-bold mr-3">Step 1</span><span class="text-sm md:text-base">Trigger</span></div></li>
+                <li class="text-gray-300 hidden md:block">&rarr;</li>
+                <li class="w-full md:w-auto"><div id="step-nav-2" class="step step-pending flex flex-row items-center justify-center p-4 border-2 rounded-lg cursor-pointer"><span class="text-lg font-bold mr-3">Step 2</span><span class="text-sm md:text-base">GitHub OIDC</span></div></li>
+                <li class="text-gray-300 hidden md:block">&rarr;</li>
+                <li class="w-full md:w-auto"><div id="step-nav-3" class="step step-pending flex flex-row items-center justify-center p-4 border-2 rounded-lg cursor-pointer"><span class="text-lg font-bold mr-3">Step 3</span><span class="text-sm md:text-base">AWS Token</span></div></li>
+                <li class="text-gray-300 hidden md:block">&rarr;</li>
+                <li class="w-full md:w-auto"><div id="step-nav-4" class="step step-pending flex flex-row items-center justify-center p-4 border-2 rounded-lg cursor-pointer"><span class="text-lg font-bold mr-3">Step 4</span><span class="text-sm md:text-base">Quality Gates</span></div></li>
+                <li class="text-gray-300 hidden md:block">&rarr;</li>
+                <li class="w-full md:w-auto"><div id="step-nav-5" class="step step-pending flex flex-row items-center justify-center p-4 border-2 rounded-lg cursor-pointer"><span class="text-lg font-bold mr-3">Step 5</span><span class="text-sm md:text-base">Deployment</span></div></li>
+            </ol>
+        </nav>
+
+        <!-- Step Content -->
+        <div id="steps-container" class="border border-slate-200 rounded-lg p-6 min-h-[32rem] relative bg-slate-50">
+
+            <!-- Step 1: Trigger -->
+            <div id="step-content-1" class="step-content active">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">Step 1: Liftoff! The Trigger 🚀</h2>
+                <p class="text-slate-600 mb-6">Our adventure begins with a simple `git push` to the `main` branch. This single action is the launch command, kicking off the entire automated workflow.</p>
+
+                <div class="diagram">Developer          GitHub Repo           GitHub Actions
+                    <span style="color: #a78bfa;">|</span>                   <span style="color: #a78bfa;">|</span>                       <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---(git push)----&gt; <span style="color: #a78bfa;">|</span>                       <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                   <span style="color: #a78bfa;">|</span>---(Webhook)---&gt;     <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                   <span style="color: #a78bfa;">|</span>                       <span style="color: #a78bfa;">|</span>---<span style="color: #4ade80; text-shadow: 0 0 5px #4ade80;">[Workflow Triggered]</span></div>
+
+                <h3 class="text-2xl font-bold text-slate-800 mt-6 mb-3">My Key Strengths ✨</h3>
+                <div class="space-y-3">
+                    <div class="strength-item">🤖 <span class="font-bold">Automation by Default:</span> The entire process is defined as code in <code class="text-sm bg-indigo-100 text-indigo-700 p-1 rounded">.github/workflows/deploy.yml</code>. No manual steps means no human error.</div>
+                    <div class="strength-item">✅ <span class="font-bold">GitFlow Adherence:</span> By tying deployment to the `main` branch, I ensure that it's always the single source of truth for production infrastructure.</div>
+                    <div class="strength-item">🔒 <span class="font-bold">Auditable & Consistent:</span> Every deployment is triggered the same way, creating a clear, auditable trail from a specific code commit to the live infrastructure.</div>
+                </div>
+            </div>
+
+            <!-- Step 2: GitHub OIDC Authentication -->
+            <div id="step-content-2" class="step-content">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">Step 2: The Secret-Free Handshake 🤝</h2>
+                <p class="text-slate-600 mb-6">No more storing secret keys in dark corners! The workflow requests a special, short-lived OIDC token from GitHub's own identity provider. This is our magic key for the next step.</p>
+
+                <div class="diagram">GitHub Actions Runner           GitHub OIDC Provider
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[1. Request Token]----&gt; <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>---<span style="color: #60a5fa;">[2. Generate JWT]</span>
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>    (Signed by GitHub)
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>    (Contains repo, SHA)
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span> &lt;---[3. Issue JWT]-------- <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                               <span style="color: #a78bfa;">|</span>
+                    <span style="color: #4ade80;">[Runner holds a signed JWT]</span>        <span style="color: #4ade80;">[Identity Verified]</span></div>
+
+                <h3 class="text-2xl font-bold text-slate-800 mt-6 mb-3">My Key Strengths ✨</h3>
+                <div class="space-y-3">
+                    <div class="strength-item">🔑 <span class="font-bold">Keyless Authentication:</span> This JWT is a verifiable credential, cryptographically signed by GitHub. It proves *who* is running the job and from *where*.</div>
+                    <div class="strength-item">🛡️ <span class="font-bold">Zero Static Secrets:</span> The token is dynamically generated for each job and expires quickly. This eliminates the massive security risk of long-lived access keys being stored in GitHub Secrets.</div>
+                </div>
+            </div>
+
+            <!-- Step 3: AWS Secure Token Exchange -->
+            <div id="step-content-3" class="step-content">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">Step 3: The AWS VIP Pass ✨</h2>
+                <p class="text-slate-600 mb-6">With our special GitHub JWT in hand, we present it to AWS. AWS validates the token and, if everything checks out, grants us a temporary, limited-privilege pass to perform our deployment duties.</p>
+
+                <div class="diagram">GitHub Runner (with JWT)              AWS STS
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[1. AssumeRoleWithWebIdentity]--&gt; <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>    (Presents OIDC JWT)                 <span style="color: #a78bfa;">|</span>---<span style="color: #60a5fa;">[2. Validate Token]</span>
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>  - Is it from GitHub?
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>  - Does it match my Role's
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>    Trust Policy?
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span> &lt;---[3. Issue Temp Credentials]----- <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                                        <span style="color: #a78bfa;">|</span>
+                    <span style="color: #4ade80;">[Runner has short-lived AWS creds]</span>      <span style="color: #4ade80;">[Trust Established]</span></div>
+
+                <h3 class="text-2xl font-bold text-slate-800 mt-6 mb-3">My Key Strengths ✨</h3>
+                <div class="space-y-3">
+                    <div class="strength-item">👑 <span class="font-bold">Principle of Least Privilege:</span> The AWS IAM Role's **Trust Policy** is configured to *only* trust GitHub's OIDC provider, and *only* for my specific repository and branch. No other repository can assume my role.</div>
+                    <div class="strength-item">⏳ <span class="font-bold">Ephemeral Credentials:</span> The AWS credentials received are temporary and expire automatically. This is the gold standard for secure, automated access to cloud environments.</div>
+                </div>
+
+                <div class="mt-10 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Diving Deeper: The IAM Policies Behind the Magic 📜</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="strength-item">
+                            <h4 class="font-bold text-lg text-indigo-700 mb-2">OIDC Federation</h4>
+                            <p class="text-gray-700 text-sm">We establish <strong>OIDC trust</strong> between AWS and GitHub, allowing GitHub to vouch for its own workflow identity, eliminating the need for long-term API keys.</p>
+                        </div>
+                        <div class="strength-item">
+                            <h4 class="font-bold text-lg text-indigo-700 mb-2">Least Privilege (PoLP)</h4>
+                            <p class="text-gray-700 text-sm">Access is granted via an <strong>IAM Trust Policy</strong> which checks specific claims in the JWT, such as the `repository` and `ref` (branch), ensuring the token is only usable for its intended purpose.</p>
+                        </div>
+                        <div class="strength-item">
+                            <h4 class="font-bold text-lg text-indigo-700 mb-2">Zero Trust / Key Rotation</h4>
+                            <p class="text-gray-700 text-sm">The access token is <strong>short-lived (typically &lt; 1 hour)</strong>, meaning there are no persistent credentials to steal, drastically reducing the security blast radius.</p>
+                        </div>
+                        <div class="strength-item">
+                            <h4 class="font-bold text-lg text-indigo-700 mb-2">Auditability</h4>
+                            <p class="text-gray-700 text-sm">Each token is tied to a specific <strong>GitHub workflow run ID</strong>, providing a clean, immutable audit trail of exactly which CI/CD job performed the deployment.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-indigo-600 mb-2">Trust Policy (WHO can assume the role)</h4>
+                            <p class="text-sm text-slate-500 mb-3">This policy strictly controls who can assume the role, limiting access to my GitHub OIDC provider and specifically the `Sunya13` repositories.</p>
+                            <div class="code-snippet">
+<pre>{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Principal": {
+            "Federated": "arn:aws:iam::ACCOUNT_ID:oidc-provider/token.actions.githubusercontent.com"
+        },
+        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Condition": {
+            "StringEquals": {
+                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+            },
+            "StringLike": {
+                "token.actions.githubusercontent.com:sub": "repo:Sunya13/*"
+            }
+        }
+    }]
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-teal-600 mb-2">Permissions Policy (WHAT the role can do)</h4>
+                            <p class="text-sm text-slate-500 mb-3">This policy defines what the assumed role can do, granting only the actions necessary for Terraform to manage the infrastructure.</p>
+                            <div class="code-snippet">
+<pre>{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "CloudFrontWAFPermissions",
+        "Effect": "Allow",
+        "Action": [
+            "cloudfront:Create*", "cloudfront:Update*",
+            "cloudfront:Delete*", "cloudfront:Get*",
+            "cloudfront:List*", "wafv2:CreateWebACL",
+            "wafv2:UpdateWebACL", "wafv2:DeleteWebACL",
+            "wafv2:Get*", "wafv2:List*"
+        ],
+        "Resource": "*"
+    }, {
+        "Sid": "S3AndKMSManagement",
+        "Effect": "Allow",
+        "Action": [
+            "s3:CreateBucket", "s3:Put*", "s3:Get*",
+            "s3:Delete*", "s3:List*", "kms:*"
+        ],
+        "Resource": "*"
+    }]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: CI Quality & Security Gates -->
+            <div id="step-content-4" class="step-content">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">Step 4: The Quality Guardian Gauntlet 🛡️</h2>
+                <p class="text-slate-600 mb-6">Before we can change the world (or the cloud), our code must prove its worth! The pipeline acts as a guardian, running a series of automated checks. Only the worthy may pass.</p>
+
+                <div class="diagram">GitHub Runner
+                    <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[1. terraform fmt]----&gt; <span style="color: #eab308;">[Check Formatting]</span>
+                    <span style="color: #a78bfa;">|</span>---[2. terraform validate]--&gt; <span style="color: #eab308;">[Check Syntax]</span>
+                    <span style="color: #a78bfa;">|</span>---[3. tflint]-----------&gt; <span style="color: #eab308;">[Check Best Practices]</span>
+                    <span style="color: #a78bfa;">|</span>---[4. tfsec]------------&gt; <span style="color: #eab308;">[Check for Security Issues]</span>
+                    <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">+</span>--- (IF ANY FAIL) ---&gt; <span style="color: #ef4444; text-shadow: 0 0 5px #ef4444;">[BUILD FAILED] 🛑</span>
+                    <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">+</span>--- (IF ALL PASS) ---&gt; <span style="color: #4ade80; text-shadow: 0 0 5px #4ade80;">[Proceed to Plan] ✅</span></div>
+
+                <h3 class="text-2xl font-bold text-slate-800 mt-6 mb-3">My Key Strengths ✨</h3>
+                <div class="space-y-3">
+                    <div class="strength-item">🧼 <span class="font-bold">Code Hygiene:</span> Tools like `tflint` and `terraform fmt` ensure the codebase is clean, consistent, and follows best practices, making it easier to maintain.</div>
+                    <div class="strength-item">🔍 <span class="font-bold">Shift-Left Security:</span> My secret weapon, `tfsec`, scans the code for security vulnerabilities *before* deployment. This preventative approach is far better than finding issues in production.</div>
+                    <div class="strength-item">💪 <span class="font-bold">Developer Empowerment:</span> I've included a <code class="text-sm bg-indigo-100 text-indigo-700 p-1 rounded">local_test.sh</code> script so developers can run these exact same checks on their own machines, catching issues even earlier.</div>
+                </div>
+            </div>
+
+            <!-- Step 5: CD Deployment with Terraform -->
+            <div id="step-content-5" class="step-content">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">Step 5: The Grand Finale - Deployment! 🏁</h2>
+                <p class="text-slate-600 mb-6">With all checks passed, it's time for the main event! The runner executes the Terraform `plan` and `apply`, transforming our code into live, secure, and scalable cloud infrastructure.</p>
+
+                <div class="diagram">GitHub Runner           Terraform S3 Backend             AWS Cloud
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[1. init]---------&gt; <span style="color: #a78bfa;">|</span>--(Lock & Get State)--&gt;  <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[2. plan]             <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>---[3. apply] <span style="color: #eab308;">(main only)</span> <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>------------------------&gt; <span style="color: #a78bfa;">|</span>--<span style="color: #4ade80;">[Create/Update]</span>
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>                          <span style="color: #a78bfa;">|</span>
+                    <span style="color: #a78bfa;">|</span>                         <span style="color: #a78bfa;">|</span>--(Write New State)---&gt;  <span style="color: #a78bfa;">|</span></div>
+
+                <h3 class="text-2xl font-bold text-slate-800 mt-6 mb-3">My Key Strengths ✨</h3>
+                <div class="space-y-3">
+                    <div class="strength-item">📦 <span class="font-bold">Reliable State Management:</span> I use a secure, encrypted S3 bucket for the Terraform state. This is crucial for teamwork and preventing configuration drift.</div>
+                    <div class="strength-item">🔐 <span class="font-bold">Secure Secret Injection:</span> Sensitive values are stored as GitHub Encrypted Secrets and safely passed to Terraform at runtime as environment variables, never hardcoded.</div>
+                    <div class="strength-item">👀 <span class="font-bold">Peer Review with Branch Protection:</span> The `apply` step is guarded to *only* run on the `main` branch. Pull requests generate a `plan`, allowing for a mandatory review before any infrastructure is actually changed. This is a critical safety net.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between mt-8">
+            <button id="prev-btn" class="px-6 py-2 text-base font-medium rounded-md text-slate-700 bg-slate-200 hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                &larr; Previous
+            </button>
+            <button id="next-btn" class="px-6 py-2 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow hover:shadow-lg">
+                Next &rarr;
+            </button>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+
+        function updateView() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepContent = document.getElementById(`step-content-${i}`);
+                const stepNav = document.getElementById(`step-nav-${i}`);
+
+                if (i === currentStep) {
+                    stepContent.classList.add('active');
+                    stepNav.classList.add('step-active');
+                    stepNav.classList.remove('step-completed', 'step-pending');
+                } else {
+                    stepContent.classList.remove('active');
+                    stepNav.classList.remove('step-active');
+                    if (i < currentStep) {
+                        stepNav.classList.add('step-completed');
+                        stepNav.classList.remove('step-pending');
+                    } else {
+                        stepNav.classList.add('step-pending');
+                        stepNav.classList.remove('step-completed');
+                    }
+                }
+            }
+
+            prevButton.disabled = (currentStep === 1);
+            nextButton.disabled = (currentStep === totalSteps);
+            nextButton.innerText = (currentStep === totalSteps) ? 'Adventure Complete! 🎉' : 'Next \u2192';
+        }
+
+        prevButton.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateView();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateView();
+            }
+        });
+
+        for (let i = 1; i <= totalSteps; i++) {
+            document.getElementById(`step-nav-${i}`).addEventListener('click', () => {
+                currentStep = i;
+                updateView();
+            });
+        }
+
+        updateView();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilient Event Ingestion Pipeline - Project Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-dark': '#121212',
+                        'card-dark': '#1e293b',
+                        'accent-cyan': '#22d3ee',
+                        'accent-green': '#4ade80',
+                        'accent-red': '#f87171',
+                        'accent-yellow': '#facc15',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e5e7eb;
+        }
+        .pipeline-step {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .pipeline-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(34, 211, 238, 0.2);
+            border-color: #22d3ee;
+        }
+        .accordion-header {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+        .accordion-header:hover {
+            background-color: #374151;
+        }
+        .rotated-icon {
+            transition: transform 0.3s ease;
+        }
+        .principle-item {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            border-left: 3px solid #4ade80;
+            background-color: #1e293b;
+        }
+        .status-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .sim-active {
+            box-shadow: 0 0 10px 3px #22d3ee;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto">
+    <header class="text-center mb-12 py-6 border-b border-gray-700">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-accent-cyan mb-2">Resilient Event Ingestion Pipeline</h1>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+            Clean, extensible, and resilient event ingestion pipeline: enforces schema quality, isolates and classifies failures, and applies <strong>SOLID</strong> principles to remain adaptable while sustaining reliability.
+        </p>
+    </header>
+
+    <section id="main-flow" class="mb-16">
+        <h2 class="text-3xl font-bold text-gray-100 mb-6 text-center">Core Pipeline Flow: Parse, Validate, Persist</h2>
+
+        <div class="flex justify-center mb-8">
+            <button id="simulate-btn" onclick="simulatePipeline()" class="bg-accent-green hover:bg-green-500 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                🚀 Simulate Event Ingestion (Next: SUCCESS Path)
+            </button>
+        </div>
+
+        <div id="pipeline-diagram" class="flex flex-col md:flex-row justify-center items-center md:space-x-4 space-y-4 md:space-y-0">
+
+            <div class="flex flex-col items-center">
+                <div id="step-1-card" class="pipeline-step bg-card-dark text-gray-200 border border-gray-600 rounded-xl p-4 w-64 text-left shadow-lg">
+                    <span id="step-1-status" class="status-indicator bg-gray-500 text-white">1</span>
+                    <span class="font-semibold text-accent-cyan">Step 1: Ingestion</span>
+                    <p class="text-sm text-gray-400 mt-1">Pub/Sub Message Received</p>
+                    <p class="font-mono text-xs text-gray-500 mt-2">FnEntryPointMessageReceiver</p>
+                </div>
+                <div id="step-1-details" class="mt-2 text-sm text-gray-400 bg-gray-800 p-3 rounded-lg w-64 hidden">
+                    <ul class="list-disc list-inside text-xs">
+                        <li>Decodes Pub/Sub message.</li>
+                        <li>Critical check: <code>mode = ACTIVE</code> (us-central) vs. <code>mode = BACKUP</code> (us-east4).</li>
+                        <li>Ensures only one regional function consumes events, enabling <strong>Hot Failover</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-3xl text-gray-500 hidden md:block">&rarr;</div>
+            <div class="text-2xl text-gray-500 md:hidden">&#x2193;</div>
+
+            <div class="flex flex-col items-center">
+                <div id="step-2-card" class="pipeline-step bg-card-dark text-gray-200 border border-gray-600 rounded-xl p-4 w-64 text-left shadow-lg">
+                    <span id="step-2-status" class="status-indicator bg-gray-500 text-white">2</span>
+                    <span class="font-semibold text-accent-cyan">Step 2: Orchestration</span>
+                    <p class="text-sm text-gray-400 mt-1">Process: Parse & Validate</p>
+                    <p class="font-mono text-xs text-gray-500 mt-2">MessageProcessingService</p>
+                </div>
+                <div id="step-2-details" class="mt-2 text-sm text-gray-400 bg-gray-800 p-3 rounded-lg w-64 hidden">
+                    <p class="text-xs mt-1 font-semibold">Sequence (Implicit Template):</p>
+                    <ul class="list-disc list-inside text-xs">
+                        <li>Parse (JSON)</li>
+                        <li>Validate (Schema)</li>
+                        <li>Map (to Domain)</li>
+                        <li>Persist (DB)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-3xl text-gray-500 hidden md:block">&rarr;</div>
+            <div class="text-2xl text-gray-500 md:hidden">&#x2193;</div>
+
+            <div class="flex flex-col items-center">
+                <div id="step-3-card" class="pipeline-step bg-card-dark text-gray-200 border border-gray-600 rounded-xl p-4 w-64 text-left shadow-lg">
+                    <span id="step-3-status" class="status-indicator bg-gray-500 text-white">3</span>
+                    <span class="font-semibold text-accent-cyan">Step 3: Outcome</span>
+                    <p class="text-sm text-gray-400 mt-1">Success or Quarantined Failure</p>
+                </div>
+                <div id="step-3-details" class="mt-2 text-sm text-gray-400 bg-gray-800 p-3 rounded-lg w-64 hidden">
+                    <p id="outcome-text" class="text-xs font-semibold">Ready to simulate...</p>
+                    <ul id="outcome-list" class="list-disc list-inside text-xs mt-1">
+                        <li>Simulate an event to see the full traceability path.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resilience-flow" class="mb-16 pt-8 border-t border-gray-700">
+        <h2 class="text-3xl font-bold text-gray-100 mb-4 text-center">Operational Resilience & Failover Strategy</h2>
+        <p class="text-center text-gray-400 mb-8 max-w-xl mx-auto">
+            Demonstrates how our <strong>ACTIVE/BACKUP mode flag</strong> successfully mitigates the critical risk of <strong>state divergence</strong> and data loss caused by dual Pub/Sub subscriptions.
+        </p>
+
+        <div class="flex justify-center space-x-4 mb-8">
+            <button id="simulate-failover-prev-btn" onclick="advanceFailoverSimulation(-1)" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                &#9664; Previous
+            </button>
+            <button id="simulate-failover-next-btn" onclick="advanceFailoverSimulation(1)" class="bg-accent-red hover:bg-red-500 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                🚨 Start Failover Trace
+            </button>
+        </div>
+
+        <div id="failover-diagram-visual" class="flex flex-col items-center space-y-4 max-w-3xl mx-auto">
+            <div class="bg-gray-700 text-accent-cyan p-3 rounded-xl font-bold shadow-2xl">
+                GCP Pub/Sub Topic (Dual Subscriptions)
+            </div>
+
+            <div class="flex justify-between w-full space-x-12 mt-4">
+                <div class="text-3xl text-gray-500">⬇️</div>
+                <div class="text-3xl text-gray-500">⬇️</div>
+            </div>
+
+            <div class="flex justify-between w-full space-x-6">
+                <div id="region-active-container" class="w-1/2 flex flex-col items-center p-4 rounded-xl border-2 border-gray-600 bg-card-dark shadow-lg">
+                    <div class="text-lg font-bold text-accent-green mb-2">US-CENTRAL (ACTIVE)</div>
+                    <div class="text-xs text-gray-400 mb-2">Subscription A</div>
+                    <div id="cf-active" class="bg-accent-green text-gray-900 p-3 rounded-lg font-bold w-full text-center shadow-xl transition-all duration-700">
+                        Cloud Function (Consuming)
+                    </div>
+                    <p id="status-active" class="mt-2 text-sm text-accent-green font-semibold">Status: Listening & Active</p>
+                </div>
+
+                <div id="region-backup-container" class="w-1/2 flex flex-col items-center p-4 rounded-xl border-2 border-gray-600 bg-card-dark shadow-lg">
+                    <div class="text-lg font-bold text-gray-300 mb-2">US-EAST4 (BACKUP)</div>
+                    <div class="text-xs text-gray-400 mb-2">Subscription B</div>
+                    <div id="cf-backup" class="bg-gray-500 text-gray-900 p-3 rounded-lg font-bold w-full text-center shadow-xl transition-all duration-700">
+                        Cloud Function (Idling)
+                    </div>
+                    <p id="status-backup" class="mt-2 text-sm text-gray-400">Status: Waiting for Activation</p>
+                </div>
+            </div>
+
+            <div id="failover-narrative-box" class="bg-gray-800 p-4 rounded-xl border-t-4 border-accent-cyan w-full mt-4">
+                <h4 id="narrative-title" class="text-xl font-bold text-accent-cyan mb-2">Simulation Ready</h4>
+                <p id="narrative-message" class="text-gray-300">Click the 'Start Failover Trace' button to begin the demo of our DR containment strategy.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="design-deep-dive" class="mb-16">
+        <h2 class="text-3xl font-bold text-gray-100 mb-6 text-center">Design Deep Dive: Patterns & Principles</h2>
+
+        <div id="accordion-container-2" class="max-w-4xl mx-auto space-y-3">
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-1')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Structural Integrity & Decoupling</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-1-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-1-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Layered / Pipeline Architecture:</strong> Strict separation of concerns (Ingestion, Orchestration, Persistence, Failure Handling).</div>
+                        <div class="principle-item"><strong>Dependency Inversion & DI:</strong> High-level service depends on interfaces (<code>EventMapper</code>, <code>Repository</code>) injected by Spring, maximizing testability.</div>
+                        <div class="principle-item"><strong>Repository Pattern:</strong> Persistence logic is completely abstracted via <code>PipelineEventsRepository</code> interfaces, keeping <code>MessageProcessingService</code> ignorant of SQL.</div>
+                        <div class="principle-item"><strong>Externalized Configuration:</strong> Database, mode, encoding, and schema paths are supplied at runtime, enabling environment portability and DevOps flexibility.</div>
+                        <div class="principle-item"><strong>Configuration-Driven Mapping:</strong> Field mapping is defined in configuration (<code>application.yml</code>), decoupling structural changes from mapper logic (part of <strong>Open/Closed</strong>).</div>
+                        <div class="principle-item"><strong>Adapter Pattern (lightweight):</strong> <code>FnEntryPointMessageReceiver</code> converts the Cloud-specific Base64 Pub/Sub message into an internal <code>String</code>.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-2')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Resilience & Failure Containment</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-2-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-2-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Strategy Pattern:</strong> Pluggable <code>EventMapper</code> and <code>FailureMapper</code> interfaces allow new event types/failure handling without modifying the orchestrator (<strong>Open/Closed</strong>).</div>
+                        <div class="principle-item"><strong>Fail-Fast Validation:</strong> Schema validation occurs before domain mapping. Failures immediately short-circuit to the failure table, guaranteeing <strong class="text-accent-red">no partial or polluted data</strong> downstream.</div>
+                        <div class="principle-item">
+                            <strong>Cross-Region Resilience & DLQ Gap Strategy:</strong> This manual check is the <strong>architectural intelligence</strong> that compensates for the lack of native <strong class="text-accent-yellow">Dead Letter Queue (DLQ) support</strong> and the inherent risks of <strong class="text-accent-yellow">dual Pub/Sub subscriptions</strong> (one per region). Since our system has a mandatory <strong>7-day retention</strong>, the Backup function must consume and <strong>log them</strong> to prevent queue build-up, which inadvertently <strong>advances the subscription pointer</strong>. The <strong>ACTIVE/BACKUP</strong> check is vital to prevent the pointer from getting ahead of the Active region's state.
+                            <p class="mt-2 text-xs text-gray-400"><strong>Risk Mitigation:</strong> The mode switch ensures the Backup remains <strong>functionally passive</strong> until manual activation. This prevents a <strong>data loss gap</strong> where the Backup's advanced pointer misses messages that the defunct Active region never successfully acknowledged.
+                                <br><strong class="text-accent-cyan">Future Remediation (DLQ vs. HTTP Push):</strong> The preferred fix is moving to <strong>HTTP Push Subscriptions</strong> (one single subscription, two endpoints) to eliminate state divergence entirely. Alternatively, enabling <strong>DLQ</strong> would automatically contain failing messages from the defunct region, preventing stream pollution and message loss upon failover.</p>
+                        </div>
+                        <div class="principle-item"><strong>Exception Hierarchy:</strong> Custom exceptions (<code>EventMappingException</code>, <code>DatabaseViolationException</code>) allow the processing service to distinguish error categories and route them differently (fail table vs. logged retry).</div>
+                        <div class="principle-item"><strong>Separation of Concerns in Error Routing:</strong> Distinct <code>catch</code> blocks in the orchestrator handle mapping failures, DB constraint failures, and unexpected errors separately.</div>
+                        <div class="principle-item"><strong>Error Code / Taxonomy Pattern:</strong> <code>FailedEventCodeEnum</code> provides a canonical, enumerated list of failure reasons for consistent classification and operational routing.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-3')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Data Quality & Domain Modeling</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-3-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-3-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Mapper Pattern:</strong> <code>PipelineEventMapper</code> centralizes the conversion of raw JSON to the clean domain entity, ensuring the domain model is decoupled from the transport format.</div>
+                        <div class="principle-item"><strong>Builder Pattern:</strong> <code>FailedEvent.builder()</code> ensures consistent, immutable, and readable construction of failure records, avoiding messy constructors.</div>
+                        <div class="principle-item"><strong>Template Method Style Processing (implicit):</strong> The fixed <code>parse &rarr; validate &rarr; map</code> sequence in the orchestrator enforces a uniform, predictable contract for all event processing.</div>
+                        <div class="principle-item"><strong>Natural Key / Idempotency Support:</strong> The domain entity uses a composite key (<code>event's id</code>, <code>event's source</code>, <code>event's business date</code>) in its <code>equals</code>/<code>hashCode</code>, supporting deduplication and upsert logic.</div>
+                        <div class="principle-item"><strong>Domain Event Modeling:</strong> Explicitly defining <code>PipelineEvent</code> (success) and <code>FailedEvent</code> (failure) clarifies the contract for downstream data consumers.</div>
+                        <div class="principle-item"><strong>Builder + Time Capture:</strong> The <code>FailedEvent</code> builder captures <code>processTime</code> at construction, ensuring consistent and auditable timestamps for all quarantined records.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-4')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Security Posture & IAM Authentication (PoLP)</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-4-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-4-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Stateless Design:</strong> The pipeline is fully stateless (no HTTP layer, user sessions, or cookies), which maximizes scalability and significantly reduces the attack surface related to session hijacking.</div>
+                        <div class="principle-item"><strong>Authentication Delegated to GCP:</strong> Security relies entirely on <strong>infrastructure-level IAM</strong> (Using Cloud Function Service Account, eliminating the need for complex application-level authentication mechanisms.</div>
+                        <div class="principle-item">
+                            <strong>Principle of Least Privilege (Verifiable):</strong> The Service Account's permissions are highly restricted. It is granted only two primary data access roles: <strong>Cloud SQL Client</strong> and <strong>Cloud SQL Instance User</strong>. This severely limits the **blast radius** of a compromise.
+                        </div>
+                        <div class="principle-item">
+                            <strong>Secretless Database Access:</strong> The combination of the <strong>Cloud SQL Client</strong> role and the internal database user mapping provided by the <strong>Cloud SQL Instance User</strong> role ensures the connection uses IAM identity exclusively, <strong>completely eliminating hardcoded database passwords</strong> (<code>enableIamAuth=true</code>).
+                        </div>
+                        <div class="principle-item">
+                            <strong>Observability Permissions Only:</strong> For monitoring, the SA is restricted to non-sensitive roles: <strong>Logs Writer</strong>, <strong>Monitoring Metric Writer</strong>, and <strong>Cloud Trace/Profiler Agent</strong>. No administrative or powerful data roles are present.
+                        </div>
+                        <div class="principle-item"><strong>Data Minimization:</strong> Failure records contain only event payload and classification; <strong>no user identifiers are stored</strong>, minimizing data exposure and aiding privacy compliance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-5')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Operational Efficiency & Observability</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-5-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-5-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Observability Pattern:</strong> Consistent log statements at every stage (ingest, validation, persistence) provide a clear, stepwise trace for rapid root cause analysis.</div>
+                        <div class="principle-item"><strong>Resource Pooling:</strong> <strong>HikariCP</strong> is used in the <code>PostgresConnector</code> to manage database connections efficiently, isolating performance tuning from business logic.</div>
+                        <div class="principle-item"><strong>Caching / Singleton Behavior:</strong> <code>SchemaFetcherService</code> caches the JSON schema instance and version after a single remote load, avoiding repeated expensive I/O and parsing.</div>
+                        <div class="principle-item"><strong>Gateway / Resource Loader:</strong> <code>SchemaFetcherService</code> encapsulates the complex logic of accessing and streaming the JSON Schema from Google Cloud Storage (GCS).</div>
+                        <div class="principle-item"><strong>Factory Usage:</strong> Leveraged for complex instantiation (e.g., <code>JsonSchemaFactory</code> for schema creation and <code>HikaridataSource</code> for connection pooling).</div>
+                        <div class="principle-item"><strong>Enum Descriptive Metadata:</strong> The failure enumeration holds both a numeric code and a human-readable description, enabling direct UI/report consumption.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-gray-100 mb-6 text-center">Stakeholder Benefits</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+
+            <div class="bg-card-dark p-6 rounded-xl border-t-4 border-accent-cyan shadow-xl">
+                <h4 class="text-xl font-bold mb-2 text-accent-cyan">Product Owners</h4>
+                <p class="text-gray-300 text-sm">Faster feature addition due to extensible mapping layer. Safer releases enabled by the <strong>ACTIVE/BACKUP</strong> switch.</p>
+            </div>
+
+            <div class="bg-card-dark p-6 rounded-xl border-t-4 border-accent-cyan shadow-xl">
+                <h4 class="text-xl font-bold mb-2 text-accent-cyan">Operations</h4>
+                <p class="text-gray-300 text-sm">Predictable, structured logs and clear error codes lead to minimal manual triage and faster root cause analysis.</p>
+            </div >
+
+            <div class="bg-card-dark p-6 rounded-xl border-t-4 border-accent-cyan shadow-xl">
+                <h4 class="text-xl font-bold mb-2 text-accent-cyan">Data Consumers</h4>
+                <p class="text-gray-300 text-sm">High data trust: records are schema-validated, versioned, and guaranteed idempotent (natural business keying prevents duplicates).</p>
+            </div>
+
+            <div class="bg-card-dark p-6 rounded-xl border-t-4 border-accent-cyan shadow-xl">
+                <h4 class="text-xl font-bold mb-2 text-accent-cyan">Engineering Team</h4>
+                <p class="text-gray-300 text-sm">High testability, clear domain boundaries, and low coupling drastically lower the risk of refactors and ease new developer onboarding.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="text-center mt-12 pt-6 border-t border-gray-700">
+        <p class="text-lg font-semibold text-gray-400">
+            This architecture ensures <strong class="text-white">adaptability</strong> (SOLID, layered structure) and <strong class="text-white">operational excellence</strong> (Observability, Resilience) at scale.
+        </p>
+    </footer>
+
+</div>
+
+<script>
+    const STEP_IDS = ['step-1', 'step-2', 'step-3'];
+    const STATUS_ICONS = {
+        SUCCESS: '✅',
+        FAILURE: '❌',
+        RETRY: '⚠️',
+        IN_PROGRESS: '⚙️'
+    };
+    const DELAY = 1000;
+
+    const OUTCOME_TYPES = ['SUCCESS', 'VALIDATION_FAILURE', 'DB_CONSTRAINT'];
+    let nextSimOutcomeIndex = 0;
+
+    let failoverResolver = null;
+    let currentFailoverPhase = 0;
+
+    window.onload = () => {
+        updateMainSimButtonText();
+        document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+    };
+
+    function updateMainSimButtonText() {
+        const initialText = `🚀 Simulate Event Ingestion (Next: ${OUTCOME_TYPES[nextSimOutcomeIndex].replace('_', ' ')} Path)`;
+        document.getElementById('simulate-btn').textContent = initialText;
+    }
+
+
+
+    function resetVisuals() {
+        // Reset main pipeline steps (Visuals only)
+        STEP_IDS.forEach(id => {
+            const card = document.getElementById(`${id}-card`);
+            const status = document.getElementById(`${id}-status`);
+
+            card.classList.remove('sim-active');
+            card.style.borderColor = '#4b5563';
+
+            status.classList.remove('bg-accent-green', 'bg-accent-red', 'bg-accent-yellow', 'bg-accent-cyan', 'bg-gray-500');
+            status.classList.add('bg-gray-500');
+            status.style.opacity = '0';
+            status.textContent = id.split('-')[1];
+        });
+
+        document.getElementById('step-3-details').classList.add('hidden');
+        document.getElementById('outcome-text').textContent = 'Running simulation...';
+        document.getElementById('outcome-list').innerHTML = `<li>Tracing execution path...</li>`;
+
+        document.getElementById('failover-diagram-visual').querySelectorAll('.bg-accent-green, .bg-accent-red', '.bg-accent-yellow', '.bg-accent-cyan').forEach(el => {
+            el.classList.remove('bg-accent-green', 'bg-accent-red', 'bg-accent-yellow', 'bg-accent-cyan');
+        });
+        document.getElementById('cf-active').classList.add('bg-accent-green');
+        document.getElementById('cf-backup').classList.add('bg-gray-500');
+
+        document.getElementById('status-active').classList.remove('text-accent-red', 'text-accent-yellow');
+        document.getElementById('status-active').classList.add('text-accent-green');
+        document.getElementById('status-backup').classList.remove('text-accent-red', 'text-accent-yellow');
+        document.getElementById('status-backup').classList.add('text-gray-400');
+
+        document.getElementById('failover-narrative-box').classList.remove('border-accent-red', 'border-accent-yellow', 'border-accent-green');
+        document.getElementById('failover-narrative-box').classList.add('border-accent-cyan');
+    }
+
+    // Reset function for the main pipeline before it starts running
+    function resetMainPipelineForStart() {
+        resetVisuals();
+
+        // Main button logic (Disabling and setting "Processing...")
+        document.getElementById('simulate-btn').disabled = true;
+        document.getElementById('simulate-btn').textContent = 'Processing...';
+
+        // Failover button logic (Re-enabling/Resetting them)
+        document.getElementById('simulate-failover-next-btn').disabled = false;
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+
+        failoverResolver = null;
+        currentFailoverPhase = 0;
+
+        // Reset the failover narrative text
+        document.getElementById('narrative-title').textContent = 'Simulation Ready';
+        document.getElementById('narrative-message').textContent = 'Click the \'Start Failover Trace\' button to begin the demo of our DR containment strategy.';
+        document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
+
+        document.getElementById('status-active').textContent = 'Status: Listening & Active';
+        document.getElementById('status-backup').textContent = 'Status: Waiting for Activation';
+    }
+
+
+    // Reset function for the failover simulation (when starting or going back to 0)
+    function resetFailoverSimulation() {
+        resetVisuals();
+
+        // Reset failover state variables
+        failoverResolver = null;
+        currentFailoverPhase = 0;
+
+        // Reset failover buttons
+        document.getElementById('simulate-failover-next-btn').disabled = false;
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+
+        // Reset the main pipeline button state (Enable it, reset text)
+        document.getElementById('simulate-btn').disabled = false;
+        updateMainSimButtonText();
+
+        // Reset the failover narrative text
+        document.getElementById('narrative-title').textContent = 'Simulation Ready';
+        document.getElementById('narrative-message').textContent = 'Click the \'Start Failover Trace\' button to begin the demo of our DR containment strategy.';
+        document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
+
+        document.getElementById('status-active').textContent = 'Status: Listening & Active';
+        document.getElementById('status-backup').textContent = 'Status: Waiting for Activation';
+    }
+
+
+    async function simulatePipeline() {
+        resetMainPipelineForStart(); // Calls visual reset AND disables main button
+
+        const outcomeType = OUTCOME_TYPES[nextSimOutcomeIndex];
+        nextSimOutcomeIndex = (nextSimOutcomeIndex + 1) % OUTCOME_TYPES.length;
+
+        const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        await wait(DELAY);
+        animateStep('step-1', STATUS_ICONS.IN_PROGRESS, 'bg-accent-cyan');
+        document.getElementById('step-1-details').classList.remove('hidden');
+
+        await wait(DELAY);
+        animateStep('step-2', STATUS_ICONS.IN_PROGRESS, 'bg-accent-cyan');
+        document.getElementById('step-2-details').classList.remove('hidden');
+
+        if (outcomeType === 'VALIDATION_FAILURE') {
+            await wait(DELAY * 2);
+            completeStep('step-2', STATUS_ICONS.FAILURE, 'bg-accent-red');
+            completeStep('step-3', STATUS_ICONS.FAILURE, 'bg-accent-red');
+            showOutcome(
+                '❌ QUARANTINED FAILURE: Schema/Mapping (Fail-Fast)',
+                'Failure was detected during <strong>schema validation</strong> or mapping. Message was immediately transformed into a <strong>FailedEvent</strong> record (Fail-Fast principle) and written to the failure repository. <strong class="text-accent-red">Upstream stream continues unblocked.</strong>',
+                'bg-accent-red'
+            );
+
+        } else {
+            await wait(DELAY);
+            completeStep('step-2', STATUS_ICONS.SUCCESS, 'bg-accent-green');
+
+            await wait(DELAY);
+            animateStep('step-3', STATUS_ICONS.IN_PROGRESS, 'bg-accent-cyan');
+
+            if (outcomeType === 'SUCCESS') {
+                await wait(DELAY * 2);
+                completeStep('step-3', STATUS_ICONS.SUCCESS, 'bg-accent-green');
+                showOutcome(
+                    '✅ SUCCESS: Persistence Complete (Idempotent)',
+                    'Event successfully persisted as an <strong>PipelineEvent</strong>. Data integrity maintained via natural business keys (<code>equals</code>/<code>hashCode</code>) for guaranteed idempotency.',
+                    'bg-accent-green'
+                );
+
+            } else if (outcomeType === 'DB_CONSTRAINT') {
+                await wait(DELAY * 2);
+                completeStep('step-3', STATUS_ICONS.RETRY, 'bg-accent-yellow');
+                showOutcome(
+                    '⚠️ CLASSIFIED FAILURE: DB Constraint (Manual Review/Retry)',
+                    'Persistence failed due to a database constraint violation. The error was caught via <strong>Exception Hierarchy</strong> and classified. Written as a <strong>FailedEvent</strong> for manual review or safe downstream retry. Upstream message is acknowledged to prevent excessive redelivery.',
+                    'bg-accent-yellow'
+                );
+            }
+        }
+
+        // Re-enable main button and reset text after completion
+        document.getElementById('simulate-btn').disabled = false;
+        document.getElementById('simulate-failover-next-btn').disabled = false;
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+        updateMainSimButtonText();
+    }
+
+    function simulateFailoverClick() {
+        if (failoverResolver) {
+            failoverResolver();
+            failoverResolver = null;
+        } else if (currentFailoverPhase === 0) {
+            advanceFailoverSimulation(1);
+        }
+    }
+
+    function waitForClick(buttonText) {
+        return new Promise(resolve => {
+            failoverResolver = resolve;
+            const button = document.getElementById('simulate-failover-next-btn');
+            button.textContent = buttonText;
+            button.disabled = false;
+        });
+    }
+
+    const updateFailoverState = (phase, title, message, activeColor, backupColor, narrativeColor) => {
+        const narrativeBox = document.getElementById('failover-narrative-box');
+        const cfActive = document.getElementById('cf-active');
+        const cfBackup = document.getElementById('cf-backup');
+        const statusActive = document.getElementById('status-active');
+        const statusBackup = document.getElementById('status-backup');
+        const narrativeTitle = document.getElementById('narrative-title');
+        const narrativeMessage = document.getElementById('narrative-message');
+        const prevBtn = document.getElementById('simulate-failover-prev-btn');
+        const nextBtn = document.getElementById('simulate-failover-next-btn');
+
+        currentFailoverPhase = phase;
+
+        prevBtn.disabled = phase <= 1;
+        nextBtn.disabled = phase >= 5;
+
+        [cfActive, cfBackup].forEach(el => el.classList.remove('bg-accent-cyan', 'bg-accent-red', 'bg-accent-yellow', 'bg-accent-green', 'bg-gray-500'));
+        [statusActive, statusBackup].forEach(el => el.classList.remove('text-accent-cyan', 'text-accent-red', 'text-accent-yellow', 'text-accent-green', 'text-gray-400'));
+        narrativeBox.classList.remove('border-accent-cyan', 'border-accent-red', 'border-accent-yellow', 'border-accent-green');
+
+
+        cfActive.classList.add(activeColor);
+        cfBackup.classList.add(backupColor);
+        narrativeBox.classList.add(narrativeColor.replace('text-', 'border-'));
+
+        narrativeTitle.textContent = title;
+        narrativeMessage.innerHTML = message;
+
+        if (activeColor === 'bg-accent-green') {
+            statusActive.classList.add('text-accent-green');
+            statusActive.textContent = "Status: Consuming (Active)";
+        } else if (activeColor === 'bg-accent-red') {
+            statusActive.classList.add('text-accent-red');
+            statusActive.textContent = "Status: FAILED / Down";
+        } else if (activeColor === 'bg-accent-yellow') {
+             statusActive.classList.add('text-accent-yellow');
+            statusActive.textContent = "Status: Receives, but is PASSIVE";
+        } else {
+             statusActive.classList.add('text-gray-400');
+             statusActive.textContent = "Status: Offline";
+        }
+
+        if (backupColor === 'bg-accent-green') {
+             statusBackup.classList.add('text-accent-green');
+            statusBackup.textContent = "Status: Consuming (New Active)";
+        } else if (backupColor === 'bg-gray-500') {
+             statusBackup.classList.add('text-gray-400');
+            statusBackup.textContent = "Status: Idling (BACKUP)";
+        } else if (backupColor === 'bg-accent-yellow') {
+             statusBackup.classList.add('text-accent-yellow');
+            statusBackup.textContent = "Status: Blocked by Mode Check";
+        } else {
+             statusBackup.classList.add('text-gray-400');
+        }
+
+        if (phase === 5) {
+            nextBtn.textContent = 'Demo Complete';
+            nextBtn.disabled = true;
+        } else if (phase === 0) {
+             nextBtn.textContent = '🚨 Start Failover Trace';
+        } else {
+            nextBtn.textContent = `Continue (Phase ${phase}/5)`;
+        }
+        prevBtn.textContent = `Previous (Phase ${phase - 1})`;
+    };
+
+    function advanceFailoverSimulation(direction) {
+
+        if (currentFailoverPhase === 0) {
+             resetFailoverSimulation(); // Use the dedicated failover reset function
+             currentFailoverPhase = 1;
+        } else {
+             currentFailoverPhase += direction;
+        }
+
+        if (currentFailoverPhase > 5) {
+            currentFailoverPhase = 5;
+        } else if (currentFailoverPhase < 1) {
+            currentFailoverPhase = 0;
+            resetFailoverSimulation(); // Use the dedicated failover reset function
+            return;
+        }
+
+
+        switch (currentFailoverPhase) {
+            case 1:
+                updateFailoverState(1, 'Phase 1: Dual-Region Nominal State (High Risk)',
+                    'Due to <strong>our Centralized Infrastructure-as-Code Module restrictions</strong>, we must use dual subscriptions (one per region), imposing a <strong>mandatory 7-day retention</strong> and <strong>disabling native DLQ</strong>. The BACKUP function must consume messages and <strong>log them</strong> to prevent queue overflow, which inadvertently <strong>advances the subscription pointer</strong>.',
+                    'bg-accent-green', 'bg-accent-yellow', 'border-accent-cyan');
+                break;
+            case 2:
+                updateFailoverState(2, 'Phase 2: ACTIVE Region Fails (Risk Realized)',
+                    'The <strong>GCP REGION A</strong> function crashes. Un-acked messages remain on the GCP REGION A subscription. Due to the failure, Pub/Sub will begin aggressively redelivering these messages.',
+                    'bg-accent-red', 'bg-accent-yellow', 'border-accent-red');
+                break;
+            case 3:
+                updateFailoverState(3, 'Phase 3: Mitigation in Action (Intelligent Containment)',
+                    'The <strong>GCP REGION B (BACKUP)</strong> function is blocked by the <strong>ACTIVE/BACKUP mode check</strong> (Step 1). If this check failed, the Backup region’s advanced pointer (due to logging) would bypass the un-acked messages from GCP REGION A, leading to a permanent <strong>data loss gap</strong>.',
+                    'bg-accent-red', 'bg-accent-yellow', 'border-accent-yellow');
+                break;
+            case 4:
+                updateFailoverState(4, 'Phase 4: Manual Failover (Operational Step)',
+                    'Operations manually flips the configuration flag for <strong>GCP REGION B</strong> to <strong>ACTIVE</strong>. The function begins full processing, and the old region\'s subscription is allowed to expire or is cleaned up.',
+                    'bg-gray-500', 'bg-accent-green', 'border-accent-green');
+                break;
+            case 5:
+                updateFailoverState(5, 'Phase 5: Strategic Roadmap (Fixing the Gap)',
+                    `The manual switch is strategic debt. The permanent fix requires updating the <strong>Centralized Infrastructure-as-Code Module</strong>.
+
+                    <h5 class="text-white font-bold mt-2">Option A: Native DLQ (Operational Containment)</h5>
+                    <p class="text-sm text-gray-400">DLQ automates containment of failed messages from the defunct region (GCP REGION A). When a message fails repeatedly, Pub/Sub automatically quarantines it, <strong>guaranteeing zero data loss</strong> due to runtime failures. The GCP REGION B stream remains clean for failover.</p>
+
+                    <h5 class="text-white font-bold mt-2">Option B: HTTP Push Subscription (Architectural Simplification)</h5>
+                    <p class="text-sm text-gray-400">This allows *both* regional functions to attach to a <strong>single global subscription</strong>, eliminating the entire dual-subscription pointer problem and regional state divergence. This is the <strong>more elegant architectural goal</strong>.</p>
+
+                    <strong class="text-accent-cyan">Architectural Insight:</strong> DLQ (Option A) is a robust operational fix for *failures*, but HTTP Push (Option B) solves the foundational *complexity* of dual state pointers.`,
+                    'bg-gray-500', 'bg-accent-green', 'border-accent-cyan');
+                break;
+        }
+
+        if (currentFailoverPhase === 5) {
+            document.getElementById('simulate-failover-next-btn').textContent = 'Demo Complete';
+            document.getElementById('simulate-failover-next-btn').disabled = true;
+        }
+    }
+
+
+    function animateStep(id, text, colorClass) {
+        const card = document.getElementById(`${id}-card`);
+        const status = document.getElementById(`${id}-status`);
+
+        card.classList.add('sim-active');
+        status.classList.remove('bg-gray-500', 'bg-accent-cyan', 'bg-accent-green', 'bg-accent-red', 'bg-accent-yellow');
+        status.classList.add(colorClass);
+        status.textContent = text;
+        status.style.opacity = '1';
+    }
+
+    function completeStep(id, text, colorClass) {
+        const card = document.getElementById(`${id}-card`);
+        const status = document.getElementById(`${id}-status`);
+
+        card.classList.remove('sim-active');
+        const hexColor = colorClass.replace('bg-', '#').replace('accent-cyan', '22d3ee').replace('accent-green', '4ade80').replace('accent-red', 'f87171').replace('accent-yellow', 'facc15');
+        card.style.borderColor = hexColor;
+
+        status.classList.remove('bg-gray-500', 'bg-accent-cyan', 'bg-accent-green', 'bg-accent-red', 'bg-accent-yellow');
+        status.classList.add(colorClass);
+        status.textContent = text;
+    }
+
+    function showOutcome(title, description, colorClass) {
+        document.getElementById('step-3-details').classList.remove('hidden');
+        const outcomeText = document.getElementById('outcome-text');
+        const outcomeList = document.getElementById('outcome-list');
+
+        outcomeText.className = `text-xs font-semibold ${colorClass.replace('bg-', 'text-')}`;
+        outcomeText.innerHTML = title;
+        outcomeList.innerHTML = `<li>${description}</li>`;
+    }
+
+    function toggleAccordion(id) {
+        const content = document.getElementById(`${id}-content`);
+        const icon = document.getElementById(`${id}-icon`);
+
+        const containerId = id.startsWith('deep-dive') ? 'accordion-container-2' : 'accordion-container';
+
+        if (content.classList.contains('hidden')) {
+            document.querySelectorAll(`#${containerId} > div > div:nth-child(2)`).forEach(c => {
+                if (c.id !== `${id}-content` && !c.classList.contains('hidden')) {
+                    c.classList.add('hidden');
+                    const otherIcon = document.getElementById(c.id.replace('-content', '-icon'));
+                    if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            content.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
+</body>
+</html>

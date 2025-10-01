@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCP Cloud SQL IAM Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7fafc; }
+        .flow-block {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .flow-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .flow-block.active {
+            border: 3px solid #10b981; /* Emerald-500 */
+        }
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+        }
+        .arrow::after {
+            content: '→';
+            font-size: 2rem;
+            color: #3b82f6;
+            line-height: 0;
+            padding: 0 10px;
+        }
+        .segment-line {
+            height: 100%;
+            width: 3px;
+            background-color: #fca5a5; /* Red-300 for boundary */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 bg-gray-50 min-h-screen">
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">IAM Strategy for Cloud SQL (GCP)</h1>
+    <p class="text-gray-600 mb-8">This architecture demonstrates key security principles for Identity Access Management (IAM) in a cloud environment. It serves as a <strong>Reference Architecture</strong> for separating duties and enforcing least privilege across environments. Click on any component to explore the applied IAM principles.</p>
+</div>
+
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+        <h2 class="text-xl font-semibold mb-6 text-gray-700">The Access Flow & Segmentation</h2>
+
+        <div class="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4 items-center justify-between">
+
+            <!-- 1. Identity Provider -->
+            <div id="idp" class="flow-block bg-blue-50 text-blue-800 p-4 rounded-lg flex-1 min-w-[150px] text-center" onclick="showDetails('idp')">
+                <p class="text-2xl mb-1">🌐</p>
+                <p class="font-semibold text-sm md:text-base">PingFederate (IdP)</p>
+                <p class="text-xs">Authentication</p>
+            </div>
+
+            <div class="arrow flex-none hidden md:block"></div>
+
+            <!-- 2. GCP IAM -->
+            <div id="gcp" class="flow-block bg-indigo-50 text-indigo-800 p-4 rounded-lg flex-1 min-w-[150px] text-center" onclick="showDetails('gcp')">
+                <p class="text-2xl mb-1">☁️</p>
+                <p class="font-semibold text-sm md:text-base">GCP IAM</p>
+                <p class="text-xs">Authorization Hub</p>
+            </div>
+
+            <div class="arrow flex-none hidden md:block"></div>
+
+            <!-- 3. Cloud SQL Segments -->
+            <div class="flex-2 w-full md:w-auto relative border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <h3 class="text-sm font-bold text-center mb-3 text-gray-700">Cloud SQL Instances</h3>
+                <div class="flex justify-between space-x-2">
+
+                    <!-- Non-Prod Segment (Dev/QA) -->
+                    <div id="dev" class="flow-block bg-green-50 text-green-800 p-3 rounded-md flex-1 text-center" onclick="showDetails('dev')">
+                        <p class="text-xl mb-1">🧪</p>
+                        <p class="font-medium text-xs">Dev / Non-Prod DBs</p>
+                    </div>
+
+                    <!-- Production Segment -->
+                    <div id="prod" class="flow-block bg-red-50 text-red-800 p-3 rounded-md flex-1 text-center" onclick="showDetails('prod')">
+                        <p class="text-xl mb-1">💰</p>
+                        <p class="font-medium text-xs">Production DB</p>
+                        <div class="segment-line h-full w-0.5 bg-red-400 absolute left-1/2 top-0 transform -translate-x-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mt-10 mb-4 text-gray-700">Role Mapping & Least Privilege</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div id="sunya" class="flow-block bg-yellow-50 text-yellow-800 p-4 rounded-lg text-center" onclick="showDetails('sunya')">
+                <p class="text-2xl mb-1">👨‍💻</p>
+                <p class="font-semibold">General Developer/Support Identity (`user`)</p>
+            </div>
+            <div id="ad_sunya" class="flow-block bg-purple-50 text-purple-800 p-4 rounded-lg text-center" onclick="showDetails('ad_sunya')">
+                <p class="text-2xl mb-1">👑</p>
+                <p class="font-semibold">Production Support Group (via `admin.user` identity)</p>
+            </div>
+            <div id="dba" class="flow-block bg-teal-50 text-teal-800 p-4 rounded-lg text-center" onclick="showDetails('dba')">
+                <p class="text-2xl mb-1">🔧</p>
+                <p class="font-semibold">New DBA Group Strategy (Multi-Identity/Group)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-200 sticky top-4 h-fit">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4" id="detail-title">Architectural Details</h2>
+        <div id="detail-content" class="text-gray-600 space-y-4">
+            <p>Click any block in the flow diagram to see the key IAM principles and technical details behind that component.</p>
+            <div class="p-3 bg-gray-100 border-l-4 border-gray-400 rounded">
+                <p class="font-semibold text-sm text-gray-700">The 4 A's of IAM are Administration, Authentication, Authorization, and Audit.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const detailsData = {
+        idp: {
+            title: '🌐 PingFederate (IdP) - Authentication',
+            content: `
+                <p class="font-semibold text-blue-800">Principle: Identity Federation (Authentication)</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Role:</strong> External Identity Provider, handling user login (SSO).</li>
+                    <li><strong>Protocol:</strong> Uses SAML/OIDC to pass a cryptographically signed Identity Assertion to GCP.</li>
+                    <li><strong>Security Layer:</strong> Enforces strong, centralized policy (like MFA) before access reaches the cloud.</li>
+                </ul>
+            `
+        },
+        gcp: {
+            title: '☁️ GCP IAM - Authorization Hub',
+            content: `
+                <p class="font-semibold text-indigo-800">Principle: Granular Access Control (RBAC)</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Function:</strong> GCP consumes the identity from PingFederate and maps it to a specific IAM role (e.g., \`roles/cloudsql.viewer\`).</li>
+                    <li><strong>Best Practice:</strong> Uses IAM on the Cloud SQL instance itself to define *who* (the user/group) can connect to the database.</li>
+                    <li><strong>Core IAM:</strong> This step governs the <strong>Authorization</strong> pillar of IAM.</li>
+                </ul>
+            `
+        },
+        dev: {
+            title: '🧪 Dev/Non-Prod DBs - Group-Based Access',
+            content: `
+                <p class="font-semibold text-green-800">Principle: Least Privilege (PoLP)</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Access Policy:</strong> Permissions are granted to Groups (e.g., Non-Prod Support Group, Non-Prod DBA Group).</li>
+                    <li><strong>Identity Type:</strong> Users in these groups log in with their <strong>standard, non-privileged identity</strong> (\`user\`, \`name\`).</li>
+                    <li><strong>Privilege Level:</strong> Standard roles are granted <strong>Read/Write</strong> access to perform development, testing, and troubleshooting tasks, reflecting the purpose of non-production environments.</li>
+                </ul>
+            `
+        },
+        prod: {
+            title: '💰 Production DB - Strict Access via AD Accounts',
+            content: `
+                <p class="font-semibold text-red-800">Principle: Accountability & Strict Segmentation</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Control:</strong> Access is restricted to users logging in with a <strong>dedicated AD-provisioned identity</strong> (e.g., \`admin.user\`, \`admin.name\`).</li>
+                    <li><strong>Policy:</strong> The Prod Support Group and Prod DBA Group are the only authorized principals.</li>
+                    <li><strong>Audit:</strong> This strict use of separate AD accounts satisfies the <strong>Audit</strong> pillar by ensuring all highly-privileged actions are tied to a non-standard, traceable login.</li>
+                </ul>
+            `
+        },
+        sunya: {
+            title: '👨‍💻 General Developer/Support Identity (`user`)',
+            content: `
+                <p class="font-semibold text-yellow-800">Principle: Least Privilege</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Role:</strong> Standard Identity used for daily, non-privileged tasks.</li>
+                    <li><strong>Group Association:</strong> Used by General Developers and the <strong>Non-Prod Support Group</strong> (e.g., \`UAT1\`, \`UAT2\`).</li>
+                    <li><strong>Access:</strong> Has <strong>Read/Write</strong> connectivity in Dev/UAT/Non-Prod segments, reflecting the standard operational needs for non-production work.</li>
+                </ul>
+            `
+        },
+        ad_sunya: {
+            title: '👑 Production Support Group (via `admin.user` identity)',
+            content: `
+                <p class="font-semibold text-purple-800">Principle: Dedicated Privileged Access</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Identity:</strong> The specialized \`admin.user\` login is provisioned to members of the <strong>Production Support Group</strong> (including Tech Leads).</li>
+                    <li><strong>Function:</strong> This identity is <strong>reserved</strong> strictly for Production segment access (Read-Only or limited support).</li>
+                    <li><strong>Separation:</strong> Requires explicit login to isolate the standard identity (\`user\`) from the high-risk production environment.</li>
+                </ul>
+            `
+        },
+        dba: {
+            title: '🔧 New DBA Group Strategy (Multi-Identity/Group)',
+            content: `
+                <p class="font-semibold text-teal-800">Principles: SoD, PoLP, and Accountability</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Non-Prod Groups:</strong> DBA members use their <strong>standard identity</strong> (\`name\`) to connect to groups like \`dba_dev\` and \`dba_non_prod\` (Read-Only access).</li>
+                    <li><strong>Prod Groups:</strong> DBA members use a <strong>dedicated AD identity</strong> (\`admin.name\`) to connect to the \`dba_prod\` group (Write/Admin access).</li>
+                    <li><strong>Benefit:</strong> This two-tiered identity approach prevents the powerful Production write credentials from being used accidentally or maliciously in lower environments, ensuring <strong>Separation of Duties</strong> (SoD) is enforced via <strong>Authorization</strong>.</li>
+                </ul>
+            `
+        }
+    };
+
+    const detailTitle = document.getElementById('detail-title');
+    const detailContent = document.getElementById('detail-content');
+    const flowBlocks = document.querySelectorAll('.flow-block');
+
+    function showDetails(id) {
+        flowBlocks.forEach(block => block.classList.remove('active'));
+
+        document.getElementById(id).classList.add('active');
+
+        const data = detailsData[id];
+        detailTitle.textContent = data.title;
+        detailContent.innerHTML = data.content;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showDetails('gcp');
+    });
+</script>
+</body>
+</html>
