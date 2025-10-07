@@ -504,9 +504,27 @@
                 </div>
             `;
 
+
+            let personalProjectsHTML = `
+                <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col justify-between">
+                    <div class="project-inner">
+                        <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">Secure CI/CD Deployment using OIDC & GitHub Deployer</h3>
+                        <p class="text-slate-700 leading-relaxed mb-8">
+                            Engineered a highly secure, passwordless deployment pipeline using <strong>OpenID Connect (OIDC)</strong> and GitHub Actions. This implementation strictly adheres to the <strong>Principle of Least Privilege</strong> by ensuring no long-lived secrets are stored and access is conditional on the source repository and branch.
+                        </p>
+                    </div>
+                    <a href="github_oidc_diagram.html" target="_blank" class="block w-full text-center mt-6">
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-[1.01]">
+                            View OIDC Security Flow
+                        </button>
+                    </a>
+                </div>
+            `;
+
+            // Add the original AWS project card
             const awsProject = resumeData.projects[0];
-            personalProjectsContainer.innerHTML = `
-                <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden lg:col-span-2">
+            personalProjectsHTML += `
+                <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
                     <div class="project-inner">
                         <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">${awsProject.name}</h3>
                         <p class="text-slate-700 leading-relaxed">${awsProject.description.replace(/\*\*(.*?)\*\*/g, '<b class="text-green-600 font-bold">$1</b>')}</p>
@@ -517,6 +535,8 @@
                     </div>
                 </div>
             `;
+
+            personalProjectsContainer.innerHTML = personalProjectsHTML;
         }
 
         function generateEducation() {
