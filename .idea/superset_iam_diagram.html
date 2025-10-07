@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superset IAM Federation Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .flow-block {
+            cursor: default;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+        }
+        .flow-block:hover {
+            border: 2px solid #9333ea; /* Purple hover for focus */
+            transform: translateY(-2px);
+        }
+        .connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #9333ea;
+            padding: 10px 0;
+        }
+        .connector::before {
+            content: '→';
+            font-size: 2.5rem;
+            line-height: 0;
+        }
+        .principle-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        /* Mobile adjustment for flow */
+        @media (max-width: 768px) {
+            .connector {
+                width: 100%;
+                height: auto;
+                justify-content: flex-start;
+            }
+            .connector::before {
+                content: '↓';
+                margin-right: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 bg-gray-50 min-h-screen">
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-extrabold text-indigo-700 mb-4 border-b pb-2">Superset Federation and Granular Authorization Flow</h1>
+    <p class="text-lg text-gray-600 mb-8">This diagram illustrates a multi-layered IAM solution, combining Identity Federation (Ping) with application-level RBAC/ABAC (Superset).</p>
+</div>
+
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 items-stretch">
+
+    <!-- 1. User & Authentication -->
+    <div class="md:col-span-1 flex flex-col items-center">
+        <div id="user-auth" class="flow-block bg-blue-50 text-blue-800 p-4 rounded-xl w-full text-center">
+            <p class="text-2xl mb-1">👤</p>
+            <p class="font-semibold text-sm md:text-base">1. User Login</p>
+            <p class="text-xs">Delegated Authentication</p>
+        </div>
+        <div class="connector md:hidden"></div>
+    </div>
+
+    <!-- 2. Identity Provider -->
+    <div class="md:col-span-1 flex flex-col items-center">
+        <div id="idp" class="flow-block bg-indigo-100 text-indigo-800 p-4 rounded-xl w-full text-center">
+            <p class="text-2xl mb-1">🌐</p>
+            <p class="font-semibold text-sm md:text-base">2. PingFederate (IdP)</p>
+            <p class="text-xs">Authentication & JWT Issuance</p>
+        </div>
+        <div class="connector md:hidden"></div>
+    </div>
+
+    <!-- 3. Token & Attributes -->
+    <div class="md:col-span-1 flex flex-col items-center">
+        <div id="token" class="flow-block bg-pink-100 text-pink-800 p-4 rounded-xl w-full text-center">
+            <p class="text-2xl mb-1">🔑</p>
+            <p class="font-semibold text-sm md:text-base">3. JWT & AD Groups</p>
+            <p class="text-xs">Carries User Identity & Claims</p>
+        </div>
+        <div class="connector md:hidden"></div>
+    </div>
+
+    <!-- 4. Superset/Flask App -->
+    <div class="md:col-span-1 flex flex-col items-center">
+        <div id="superset-app" class="flow-block bg-green-100 text-green-800 p-4 rounded-xl w-full text-center">
+            <p class="text-2xl mb-1">⚙️</p>
+            <p class="font-semibold text-sm md:text-base">4. Flask App Builder (PEP)</p>
+            <p class="text-xs">Claim Consumption & Role Mapping</p>
+        </div>
+        <div class="connector md:hidden"></div>
+    </div>
+
+    <!-- 5. Granular Access -->
+    <div class="md:col-span-1 flex flex-col items-center">
+        <div id="granular-access" class="flow-block bg-yellow-100 text-yellow-800 p-4 rounded-xl w-full text-center">
+            <p class="text-2xl mb-1">📊</p>
+            <p class="font-semibold text-sm md:text-base">5. Superset Dashboards</p>
+            <p class="text-xs">Granular Widget/Data Control</p>
+        </div>
+    </div>
+
+    <!-- === Horizontal Connectors for Desktop === -->
+    <div class="connector hidden md:flex md:col-span-1"></div>
+    <div class="connector hidden md:flex md:col-span-1"></div>
+    <div class="connector hidden md:flex md:col-span-1"></div>
+    <div class="connector hidden md:flex md:col-span-1"></div>
+
+</div>
+
+<div class="max-w-7xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+    <h2 class="text-xl font-semibold text-purple-700 mb-4">Key IAM Principles Illustrated</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="principle-box">
+            <h3 class="font-bold text-lg text-yellow-700 mb-2">Mapped Role-Based Access Control (RBAC)</h3>
+            <p class="text-gray-700 text-sm">Superset's internal roles (Alpha/Gamma) are dynamically mapped from the user's <strong>corporate AD Group</strong> claims passed via PingFederate, ensuring enterprise roles drive application privileges.</p>
+        </div>
+        <div class="principle-box">
+            <h3 class="font-bold text-lg text-yellow-700 mb-2">Attribute-Based Access Control (ABAC)</h3>
+            <p class="text-gray-700 text-sm">The user's environment-based roles are configured via policies that examine multiple attributes (the AD Groups contained in the JWT), enabling flexible, policy-driven authorization at the application layer.</p>
+        </div>
+        <div class="principle-box">
+            <h3 class="font-bold text-lg text-yellow-700 mb-2">Granular Authorization (Least Privilege)</h3>
+            <p class="text-gray-700 text-sm">Access is controlled at the lowest level possible (widget-level, dashboard level, or data layer), ensuring the user's computed role limits their view strictly to necessary resources.</p>
+        </div>
+        <div class="principle-box">
+            <h3 class="font-bold text-lg text-yellow-700 mb-2">Identity Federation</h3>
+            <p class="text-gray-700 text-sm">The system utilizes OAuth 2.0/OIDC (with PingFederate) to delegate Authentication, centralizing credential management and securing the **first mile** of access.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

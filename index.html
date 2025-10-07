@@ -207,8 +207,12 @@
 
     <!-- Projects Section -->
     <section id="projects" class="mb-20 scroll-mt-16">
-        <h2 class="text-3xl font-extrabold text-indigo-700 mb-10">Personal Projects (The Sandbox)</h2>
+        <h2 class="text-3xl font-extrabold text-indigo-700 mb-10">Key Architecture Projects (Work Portfolio)</h2>
         <div id="projects-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        </div>
+
+        <h2 class="text-3xl font-extrabold text-indigo-700 mt-20 mb-10 border-t pt-8 border-indigo-200">Personal Projects (Sandbox)</h2>
+        <div id="personal-projects-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         </div>
     </section>
 
@@ -367,6 +371,7 @@
         const contentContainer = document.getElementById('experience-content');
         const skillsContainer = document.getElementById('skills-container');
         const projectsContainer = document.getElementById('projects-container');
+        const personalProjectsContainer = document.getElementById('personal-projects-container'); // NEW
         const educationContainer = document.getElementById('education-container');
 
         // --- Initialization Functions ---
@@ -463,20 +468,24 @@
 
         function generateProjects() {
             projectsContainer.innerHTML = '';
-            resumeData.projects.forEach(project => {
-                projectsContainer.innerHTML += `
-                    <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-                        <div class="project-inner">
-                            <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">${project.name}</h3>
-                            <p class="text-slate-700 leading-relaxed">${project.description.replace(/\*\*(.*?)\*\*/g, '<b class="text-green-600 font-bold">$1</b>')}</p>
-                            <div class="mt-8 p-6 border-2 border-green-300 rounded-xl bg-green-50/50">
-                                <h4 class="font-black text-indigo-700 mb-6 text-center text-xl">The Secure AWS Architecture Blueprint</h4>
-                                ${project.diagram}
-                            </div>
-                        </div>
+
+            projectsContainer.innerHTML += `
+                <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col justify-between">
+                    <div class="project-inner">
+                        <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">Superset Enterprise Federation & ABAC</h3>
+                        <p class="text-slate-700 leading-relaxed mb-8">
+                            Architected a layered Authorization solution for Superset (Data Visualization) using
+                            <strong>Identity Federation (PingFederate)</strong> for authentication and mapping corporate AD groups to
+                            Superset's built-in <strong>RBAC</strong> for granular, widget-level access control (a form of <strong>ABAC</strong>).
+                        </p>
                     </div>
-                `;
-            });
+                    <a href="superset_iam_diagram.html" target="_blank" class="block w-full text-center mt-6">
+                        <button class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-[1.01]">
+                            View Superset IAM Flow
+                        </button>
+                    </a>
+                </div>
+            `;
 
             projectsContainer.innerHTML += `
                 <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col justify-between">
@@ -489,9 +498,23 @@
                     </div>
                     <a href="iam_gcp_diagram.html" target="_blank" class="block w-full text-center mt-6">
                         <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-[1.01]">
-                            View Interactive IAM Diagram
+                            View Interactive GCP Diagram
                         </button>
                     </a>
+                </div>
+            `;
+
+            const awsProject = resumeData.projects[0];
+            personalProjectsContainer.innerHTML = `
+                <div class="project-card bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden lg:col-span-2">
+                    <div class="project-inner">
+                        <h3 class="text-2xl font-extrabold text-indigo-800 mb-4">${awsProject.name}</h3>
+                        <p class="text-slate-700 leading-relaxed">${awsProject.description.replace(/\*\*(.*?)\*\*/g, '<b class="text-green-600 font-bold">$1</b>')}</p>
+                        <div class="mt-8 p-6 border-2 border-green-300 rounded-xl bg-green-50/50">
+                            <h4 class="font-black text-indigo-700 mb-6 text-center text-xl">The Secure AWS Architecture Blueprint</h4>
+                            ${awsProject.diagram}
+                        </div>
+                    </div>
                 </div>
             `;
         }
