@@ -221,7 +221,7 @@
                     <div class="space-y-3 pt-2">
                         <div class="principle-item"><strong>Layered / Pipeline Architecture:</strong> Strict separation of concerns (Ingestion, Orchestration, Persistence, Failure Handling).</div>
                         <div class="principle-item"><strong>Dependency Inversion & DI:</strong> High-level service depends on interfaces (<code>EventMapper</code>, <code>Repository</code>) injected by Spring, maximizing testability.</div>
-                        <div class="principle-item"><strong>Repository Pattern:</strong> Persistence logic is completely abstracted via <code>AsofatePipelineEventsRepository</code> interfaces, keeping <code>MessageProcessingService</code> ignorant of SQL.</div>
+                        <div class="principle-item"><strong>Repository Pattern:</strong> Persistence logic is completely abstracted via <code>PipelineEventsRepository</code> interfaces, keeping <code>MessageProcessingService</code> ignorant of SQL.</div>
                         <div class="principle-item"><strong>Externalized Configuration:</strong> Database, mode, encoding, and schema paths are supplied at runtime, enabling environment portability and DevOps flexibility.</div>
                         <div class="principle-item"><strong>Configuration-Driven Mapping:</strong> Field mapping is defined in configuration (<code>application.yml</code>), decoupling structural changes from mapper logic (part of <strong>Open/Closed</strong>).</div>
                         <div class="principle-item"><strong>Adapter Pattern (lightweight):</strong> <code>FnEntryPointMessageReceiver</code> converts the Cloud-specific Base64 Pub/Sub message into an internal <code>String</code>.</div>
@@ -257,11 +257,11 @@
                 </div>
                 <div id="deep-dive-3-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
                     <div class="space-y-3 pt-2">
-                        <div class="principle-item"><strong>Mapper Pattern:</strong> <code>AsOfDatePipelineEventMapper</code> centralizes the conversion of raw JSON to the clean domain entity, ensuring the domain model is decoupled from the transport format.</div>
+                        <div class="principle-item"><strong>Mapper Pattern:</strong> <code>PipelineEventMapper</code> centralizes the conversion of raw JSON to the clean domain entity, ensuring the domain model is decoupled from the transport format.</div>
                         <div class="principle-item"><strong>Builder Pattern:</strong> <code>FailedEvent.builder()</code> ensures consistent, immutable, and readable construction of failure records, avoiding messy constructors.</div>
                         <div class="principle-item"><strong>Template Method Style Processing (implicit):</strong> The fixed <code>parse &rarr; validate &rarr; map</code> sequence in the orchestrator enforces a uniform, predictable contract for all event processing.</div>
                         <div class="principle-item"><strong>Natural Key / Idempotency Support:</strong> The domain entity uses a composite key (<code>eventId</code>, <code>source</code>, <code>asOfDate</code>) in its <code>equals</code>/<code>hashCode</code>, supporting deduplication and upsert logic.</div>
-                        <div class="principle-item"><strong>Domain Event Modeling:</strong> Explicitly defining <code>AsOfDatePipelineEvent</code> (success) and <code>FailedEvent</code> (failure) clarifies the contract for downstream data consumers.</div>
+                        <div class="principle-item"><strong>Domain Event Modeling:</strong> Explicitly defining <code>PipelineEvent</code> (success) and <code>FailedEvent</code> (failure) clarifies the contract for downstream data consumers.</div>
                         <div class="principle-item"><strong>Builder + Time Capture:</strong> The <code>FailedEvent</code> builder captures <code>processTime</code> at construction, ensuring consistent and auditable timestamps for all quarantined records.</div>
                     </div>
                 </div>
@@ -498,7 +498,7 @@
                 completeStep('step-3', STATUS_ICONS.SUCCESS, 'bg-accent-green');
                 showOutcome(
                     '✅ SUCCESS: Persistence Complete (Idempotent)',
-                    'Event successfully persisted as an <strong>AsOfDatePipelineEvent</strong>. Data integrity maintained via natural business keys (<code>equals</code>/<code>hashCode</code>) for guaranteed idempotency.',
+                    'Event successfully persisted as an <strong>PipelineEvent</strong>. Data integrity maintained via natural business keys (<code>equals</code>/<code>hashCode</code>) for guaranteed idempotency.',
                     'bg-accent-green'
                 );
 
