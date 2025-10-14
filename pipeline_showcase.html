@@ -269,10 +269,33 @@
 
             <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
                 <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-4')">
-                    <h3 class="text-xl font-semibold text-accent-cyan">Operational Efficiency & Observability</h3>
+                    <h3 class="text-xl font-semibold text-accent-cyan">Security Posture & IAM Authentication (PoLP)</h3>
                     <svg class="w-6 h-6 rotated-icon" id="deep-dive-4-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
                 <div id="deep-dive-4-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
+                    <div class="space-y-3 pt-2">
+                        <div class="principle-item"><strong>Stateless Design:</strong> The pipeline is fully stateless (no HTTP layer, user sessions, or cookies), which maximizes scalability and significantly reduces the attack surface related to session hijacking.</div>
+                        <div class="principle-item"><strong>Authentication Delegated to GCP:</strong> Security relies entirely on <strong>infrastructure-level IAM</strong> (Using Cloud Function Service Account, eliminating the need for complex application-level authentication mechanisms.</div>
+                        <div class="principle-item">
+                            <strong>Principle of Least Privilege (Verifiable):</strong> The Service Account's permissions are highly restricted. It is granted only two primary data access roles: <strong>Cloud SQL Client</strong> and <strong>Cloud SQL Instance User</strong>. This severely limits the **blast radius** of a compromise.
+                        </div>
+                        <div class="principle-item">
+                            <strong>Secretless Database Access:</strong> The combination of the <strong>Cloud SQL Client</strong> role and the internal database user mapping provided by the <strong>Cloud SQL Instance User</strong> role ensures the connection uses IAM identity exclusively, <strong>completely eliminating hardcoded database passwords</strong> (<code>enableIamAuth=true</code>).
+                        </div>
+                        <div class="principle-item">
+                            <strong>Observability Permissions Only:</strong> For monitoring, the SA is restricted to non-sensitive roles: <strong>Logs Writer</strong>, <strong>Monitoring Metric Writer</strong>, and <strong>Cloud Trace/Profiler Agent</strong>. No administrative or powerful data roles are present.
+                        </div>
+                        <div class="principle-item"><strong>Data Minimization:</strong> Failure records contain only event payload and classification; <strong>no user identifiers are stored</strong>, minimizing data exposure and aiding privacy compliance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden bg-card-dark border border-gray-700">
+                <div class="accordion-header flex justify-between items-center p-4" onclick="toggleAccordion('deep-dive-5')">
+                    <h3 class="text-xl font-semibold text-accent-cyan">Operational Efficiency & Observability</h3>
+                    <svg class="w-6 h-6 rotated-icon" id="deep-dive-5-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="deep-dive-5-content" class="p-4 pt-0 hidden text-gray-300 border-t border-gray-700">
                     <div class="space-y-3 pt-2">
                         <div class="principle-item"><strong>Observability Pattern:</strong> Consistent log statements at every stage (ingest, validation, persistence) provide a clear, stepwise trace for rapid root cause analysis.</div>
                         <div class="principle-item"><strong>Resource Pooling:</strong> <strong>HikariCP</strong> is used in the <code>PostgresConnector</code> to manage database connections efficiently, isolating performance tuning from business logic.</div>
@@ -340,39 +363,20 @@
     let currentFailoverPhase = 0;
 
     window.onload = () => {
-        const initialText = `🚀 Simulate Event Ingestion (Next: ${OUTCOME_TYPES[nextSimOutcomeIndex].replace('_', ' ')} Path)`;
-        document.getElementById('simulate-btn').textContent = initialText;
+        updateMainSimButtonText();
         document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
         document.getElementById('simulate-failover-prev-btn').disabled = true;
     };
 
-    function simulateFailoverClick() {
-        if (failoverResolver) {
-            failoverResolver();
-            failoverResolver = null;
-        } else if (currentFailoverPhase === 0) {
-            advanceFailoverSimulation(1);
-        }
+    function updateMainSimButtonText() {
+        const initialText = `🚀 Simulate Event Ingestion (Next: ${OUTCOME_TYPES[nextSimOutcomeIndex].replace('_', ' ')} Path)`;
+        document.getElementById('simulate-btn').textContent = initialText;
     }
 
-    function waitForClick(buttonText) {
-        return new Promise(resolve => {
-            failoverResolver = resolve;
-            const button = document.getElementById('simulate-failover-next-btn');
-            button.textContent = buttonText;
-            button.disabled = false;
-        });
-    }
 
-    function resetSimulation() {
-        document.getElementById('simulate-btn').disabled = true;
-        document.getElementById('simulate-failover-next-btn').disabled = false;
-        document.getElementById('simulate-failover-prev-btn').disabled = true;
-        document.getElementById('simulate-btn').textContent = 'Processing...';
 
-        failoverResolver = null;
-        currentFailoverPhase = 0;
-
+    function resetVisuals() {
+        // Reset main pipeline steps (Visuals only)
         STEP_IDS.forEach(id => {
             const card = document.getElementById(`${id}-card`);
             const status = document.getElementById(`${id}-status`);
@@ -395,22 +399,69 @@
         });
         document.getElementById('cf-active').classList.add('bg-accent-green');
         document.getElementById('cf-backup').classList.add('bg-gray-500');
-        document.getElementById('status-active').textContent = 'Status: Listening & Active';
+
         document.getElementById('status-active').classList.remove('text-accent-red', 'text-accent-yellow');
         document.getElementById('status-active').classList.add('text-accent-green');
-        document.getElementById('status-backup').textContent = 'Status: Waiting for Activation';
         document.getElementById('status-backup').classList.remove('text-accent-red', 'text-accent-yellow');
         document.getElementById('status-backup').classList.add('text-gray-400');
 
         document.getElementById('failover-narrative-box').classList.remove('border-accent-red', 'border-accent-yellow', 'border-accent-green');
         document.getElementById('failover-narrative-box').classList.add('border-accent-cyan');
+    }
+
+    // Reset function for the main pipeline before it starts running
+    function resetMainPipelineForStart() {
+        resetVisuals();
+
+        // Main button logic (Disabling and setting "Processing...")
+        document.getElementById('simulate-btn').disabled = true;
+        document.getElementById('simulate-btn').textContent = 'Processing...';
+
+        // Failover button logic (Re-enabling/Resetting them)
+        document.getElementById('simulate-failover-next-btn').disabled = false;
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+
+        failoverResolver = null;
+        currentFailoverPhase = 0;
+
+        // Reset the failover narrative text
         document.getElementById('narrative-title').textContent = 'Simulation Ready';
         document.getElementById('narrative-message').textContent = 'Click the \'Start Failover Trace\' button to begin the demo of our DR containment strategy.';
         document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
+
+        document.getElementById('status-active').textContent = 'Status: Listening & Active';
+        document.getElementById('status-backup').textContent = 'Status: Waiting for Activation';
     }
 
+
+    // Reset function for the failover simulation (when starting or going back to 0)
+    function resetFailoverSimulation() {
+        resetVisuals();
+
+        // Reset failover state variables
+        failoverResolver = null;
+        currentFailoverPhase = 0;
+
+        // Reset failover buttons
+        document.getElementById('simulate-failover-next-btn').disabled = false;
+        document.getElementById('simulate-failover-prev-btn').disabled = true;
+
+        // Reset the main pipeline button state (Enable it, reset text)
+        document.getElementById('simulate-btn').disabled = false;
+        updateMainSimButtonText();
+
+        // Reset the failover narrative text
+        document.getElementById('narrative-title').textContent = 'Simulation Ready';
+        document.getElementById('narrative-message').textContent = 'Click the \'Start Failover Trace\' button to begin the demo of our DR containment strategy.';
+        document.getElementById('simulate-failover-next-btn').textContent = '🚨 Start Failover Trace';
+
+        document.getElementById('status-active').textContent = 'Status: Listening & Active';
+        document.getElementById('status-backup').textContent = 'Status: Waiting for Activation';
+    }
+
+
     async function simulatePipeline() {
-        resetSimulation();
+        resetMainPipelineForStart(); // Calls visual reset AND disables main button
 
         const outcomeType = OUTCOME_TYPES[nextSimOutcomeIndex];
         nextSimOutcomeIndex = (nextSimOutcomeIndex + 1) % OUTCOME_TYPES.length;
@@ -462,10 +513,29 @@
             }
         }
 
+        // Re-enable main button and reset text after completion
         document.getElementById('simulate-btn').disabled = false;
         document.getElementById('simulate-failover-next-btn').disabled = false;
         document.getElementById('simulate-failover-prev-btn').disabled = true;
-        document.getElementById('simulate-btn').textContent = `🚀 Simulate Event Ingestion (Next: ${OUTCOME_TYPES[nextSimOutcomeIndex].replace('_', ' ')} Path)`;
+        updateMainSimButtonText();
+    }
+
+    function simulateFailoverClick() {
+        if (failoverResolver) {
+            failoverResolver();
+            failoverResolver = null;
+        } else if (currentFailoverPhase === 0) {
+            advanceFailoverSimulation(1);
+        }
+    }
+
+    function waitForClick(buttonText) {
+        return new Promise(resolve => {
+            failoverResolver = resolve;
+            const button = document.getElementById('simulate-failover-next-btn');
+            button.textContent = buttonText;
+            button.disabled = false;
+        });
     }
 
     const updateFailoverState = (phase, title, message, activeColor, backupColor, narrativeColor) => {
@@ -537,7 +607,7 @@
     function advanceFailoverSimulation(direction) {
 
         if (currentFailoverPhase === 0) {
-             resetSimulation();
+             resetFailoverSimulation(); // Use the dedicated failover reset function
              currentFailoverPhase = 1;
         } else {
              currentFailoverPhase += direction;
@@ -547,7 +617,7 @@
             currentFailoverPhase = 5;
         } else if (currentFailoverPhase < 1) {
             currentFailoverPhase = 0;
-            resetSimulation();
+            resetFailoverSimulation(); // Use the dedicated failover reset function
             return;
         }
 
