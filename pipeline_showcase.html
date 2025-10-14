@@ -625,30 +625,30 @@
         switch (currentFailoverPhase) {
             case 1:
                 updateFailoverState(1, 'Phase 1: Dual-Region Nominal State (High Risk)',
-                    'Due to <strong>our Terraform module restrictions</strong>, we must use dual subscriptions (one per region), imposing a <strong>mandatory 7-day retention</strong> and <strong>disabling native DLQ</strong>. The BACKUP function must consume messages and <strong>log them</strong> to prevent queue overflow, which inadvertently <strong>advances the subscription pointer</strong>.',
+                    'Due to <strong>our Centralized Infrastructure-as-Code Module restrictions</strong>, we must use dual subscriptions (one per region), imposing a <strong>mandatory 7-day retention</strong> and <strong>disabling native DLQ</strong>. The BACKUP function must consume messages and <strong>log them</strong> to prevent queue overflow, which inadvertently <strong>advances the subscription pointer</strong>.',
                     'bg-accent-green', 'bg-accent-yellow', 'border-accent-cyan');
                 break;
             case 2:
                 updateFailoverState(2, 'Phase 2: ACTIVE Region Fails (Risk Realized)',
-                    'The <strong>US-CENTRAL</strong> function crashes. Un-acked messages remain on the US-CENTRAL subscription. Due to the failure, Pub/Sub will begin aggressively redelivering these messages.',
+                    'The <strong>GCP REGION A</strong> function crashes. Un-acked messages remain on the GCP REGION A subscription. Due to the failure, Pub/Sub will begin aggressively redelivering these messages.',
                     'bg-accent-red', 'bg-accent-yellow', 'border-accent-red');
                 break;
             case 3:
                 updateFailoverState(3, 'Phase 3: Mitigation in Action (Intelligent Containment)',
-                    'The <strong>US-EAST4 (BACKUP)</strong> function is blocked by the <strong>ACTIVE/BACKUP mode check</strong> (Step 1). If this check failed, the Backup region’s advanced pointer (due to logging) would bypass the un-acked messages from US-CENTRAL, leading to a permanent <strong>data loss gap</strong>.',
+                    'The <strong>GCP REGION B (BACKUP)</strong> function is blocked by the <strong>ACTIVE/BACKUP mode check</strong> (Step 1). If this check failed, the Backup region’s advanced pointer (due to logging) would bypass the un-acked messages from GCP REGION A, leading to a permanent <strong>data loss gap</strong>.',
                     'bg-accent-red', 'bg-accent-yellow', 'border-accent-yellow');
                 break;
             case 4:
                 updateFailoverState(4, 'Phase 4: Manual Failover (Operational Step)',
-                    'Operations manually flips the configuration flag for <strong>US-EAST4</strong> to <strong>ACTIVE</strong>. The function begins full processing, and the old region\'s subscription is allowed to expire or is cleaned up.',
+                    'Operations manually flips the configuration flag for <strong>GCP REGION B</strong> to <strong>ACTIVE</strong>. The function begins full processing, and the old region\'s subscription is allowed to expire or is cleaned up.',
                     'bg-gray-500', 'bg-accent-green', 'border-accent-green');
                 break;
             case 5:
                 updateFailoverState(5, 'Phase 5: Strategic Roadmap (Fixing the Gap)',
-                    `The manual switch is strategic debt. The permanent fix requires updating the <strong>Common Terraform Module</strong>.
+                    `The manual switch is strategic debt. The permanent fix requires updating the <strong>Centralized Infrastructure-as-Code Module</strong>.
 
                     <h5 class="text-white font-bold mt-2">Option A: Native DLQ (Operational Containment)</h5>
-                    <p class="text-sm text-gray-400">DLQ automates containment of failed messages from the defunct region (US-CENTRAL). When a message fails repeatedly, Pub/Sub automatically quarantines it, <strong>guaranteeing zero data loss</strong> due to runtime failures. The US-EAST4 stream remains clean for failover.</p>
+                    <p class="text-sm text-gray-400">DLQ automates containment of failed messages from the defunct region (GCP REGION A). When a message fails repeatedly, Pub/Sub automatically quarantines it, <strong>guaranteeing zero data loss</strong> due to runtime failures. The GCP REGION B stream remains clean for failover.</p>
 
                     <h5 class="text-white font-bold mt-2">Option B: HTTP Push Subscription (Architectural Simplification)</h5>
                     <p class="text-sm text-gray-400">This allows *both* regional functions to attach to a <strong>single global subscription</strong>, eliminating the entire dual-subscription pointer problem and regional state divergence. This is the <strong>more elegant architectural goal</strong>.</p>
