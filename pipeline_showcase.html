@@ -260,7 +260,7 @@
                         <div class="principle-item"><strong>Mapper Pattern:</strong> <code>PipelineEventMapper</code> centralizes the conversion of raw JSON to the clean domain entity, ensuring the domain model is decoupled from the transport format.</div>
                         <div class="principle-item"><strong>Builder Pattern:</strong> <code>FailedEvent.builder()</code> ensures consistent, immutable, and readable construction of failure records, avoiding messy constructors.</div>
                         <div class="principle-item"><strong>Template Method Style Processing (implicit):</strong> The fixed <code>parse &rarr; validate &rarr; map</code> sequence in the orchestrator enforces a uniform, predictable contract for all event processing.</div>
-                        <div class="principle-item"><strong>Natural Key / Idempotency Support:</strong> The domain entity uses a composite key (<code>eventId</code>, <code>source</code>, <code>asOfDate</code>) in its <code>equals</code>/<code>hashCode</code>, supporting deduplication and upsert logic.</div>
+                        <div class="principle-item"><strong>Natural Key / Idempotency Support:</strong> The domain entity uses a composite key (<code>event's id</code>, <code>event's source</code>, <code>event's business date</code>) in its <code>equals</code>/<code>hashCode</code>, supporting deduplication and upsert logic.</div>
                         <div class="principle-item"><strong>Domain Event Modeling:</strong> Explicitly defining <code>PipelineEvent</code> (success) and <code>FailedEvent</code> (failure) clarifies the contract for downstream data consumers.</div>
                         <div class="principle-item"><strong>Builder + Time Capture:</strong> The <code>FailedEvent</code> builder captures <code>processTime</code> at construction, ensuring consistent and auditable timestamps for all quarantined records.</div>
                     </div>
@@ -625,7 +625,7 @@
         switch (currentFailoverPhase) {
             case 1:
                 updateFailoverState(1, 'Phase 1: Dual-Region Nominal State (High Risk)',
-                    'Due to <strong>company Terraform module restrictions</strong>, we must use dual subscriptions (one per region), imposing a <strong>mandatory 7-day retention</strong> and <strong>disabling native DLQ</strong>. The BACKUP function must consume messages and <strong>log them</strong> to prevent queue overflow, which inadvertently <strong>advances the subscription pointer</strong>.',
+                    'Due to <strong>our Terraform module restrictions</strong>, we must use dual subscriptions (one per region), imposing a <strong>mandatory 7-day retention</strong> and <strong>disabling native DLQ</strong>. The BACKUP function must consume messages and <strong>log them</strong> to prevent queue overflow, which inadvertently <strong>advances the subscription pointer</strong>.',
                     'bg-accent-green', 'bg-accent-yellow', 'border-accent-cyan');
                 break;
             case 2:
