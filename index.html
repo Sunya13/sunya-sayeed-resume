@@ -372,14 +372,13 @@
                     buttonText: "Run Passwordless Desktop Demo",
                     isSandbox: true
                 },
-                { // OIDC CI/CD Deployer
-                    name: "Secure CI/CD Deployment using OIDC & GitHub Deployer",
-                    description: "Engineered a highly secure, passwordless deployment pipeline using **OpenID Connect (OIDC)** and GitHub Actions. This implementation strictly adheres to the **Principle of Least Privilege** by ensuring no long-lived secrets are stored and access is conditional on the source repository and branch.",
-                    linkFile: "github_oidc_diagram.html",
-                    buttonText: "View OIDC Security Flow",
+                { // CI/CD Pipeline Adventure
+                    name: "CI/CD Pipeline Adventure",
+                    description: "An interactive, deep-dive simulation of a secure, keyless Terraform deployment pipeline on AWS using <strong>GitHub Actions</strong> and <strong>OIDC</strong>, including detailed IAM policy examples.",
+                    linkFile: "github_actions_ci_cd.html",
+                    buttonText: "Explore the CI/CD Adventure",
                     isSandbox: true
-                },
-                // Add Work Portfolio Projects here for easier mapping later if needed, but for now, they are hardcoded in generateProjects for simplicity.
+                }
             ],
             education: {
                 degree: "BEng Computer Systems Engineering (First Class Honours)",
@@ -538,11 +537,16 @@
             `;
 
 
-            const sandboxProjects = resumeData.projects;
+            const sandboxProjects = resumeData.projects.filter(p => p.isSandbox);
 
             let personalProjectsHTML = sandboxProjects.map(project => {
-                const isPasswordlessDemo = project.name.includes("Passwordless");
-                const buttonColor = isPasswordlessDemo ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700';
+                let buttonColor = 'bg-green-600 hover:bg-green-700'; // Default color
+                if (project.name.includes("Passwordless")) {
+                    buttonColor = 'bg-orange-500 hover:bg-orange-600';
+                } else if (project.name.includes("Adventure")) { // New project
+                    buttonColor = 'bg-purple-600 hover:bg-purple-700';
+                }
+
 
                 if (project.diagram) {
                     return `
@@ -816,3 +820,4 @@
 </script>
 </body>
 </html>
+
